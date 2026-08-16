@@ -1,18 +1,6 @@
 {
   "buildCommand": "npm install",
-  "devCommand": "node server.js",
   "installCommand": "npm install",
   "framework": null,
-  "functions": {
-    "server.js": {
-      "runtime": "nodejs24.x",
-      "memory": 1024
-    }
-  },
-  "rewrites": [
-    {
-      "source": "/api/:path*",
-      "destination": "/server.js"
-    }
-  ]
+  "devCommand": "npm run dev"
 }
