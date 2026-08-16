@@ -126,11 +126,42 @@ html, body {
   height: 3px;
   background: #e8e8e8;
   border-radius: 2px;
-  transition: background 0.3s;
+  transition: background 0.3s, transform 0.3s;
 }
 
 .step-bar.active {
   background: linear-gradient(90deg, #FF6B35, #FF4444);
+  transform: scaleY(1.6);
+}
+
+/* Confetti de celebración */
+.confetti-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10000;
+  overflow: hidden;
+}
+
+.confetti-piece {
+  position: absolute;
+  top: -10px;
+  width: 8px;
+  height: 14px;
+  opacity: 0.9;
+  border-radius: 2px;
+  animation: confettiFall linear forwards;
+}
+
+@keyframes confettiFall {
+  to {
+    top: 100vh;
+    transform: translateY(0) rotate(720deg);
+    opacity: 0;
+  }
 }
 
 .welcome-banner {
@@ -205,6 +236,37 @@ h2 {
 
 .hidden {
   display: none !important;
+}
+
+/* Transiciones fluidas entre pasos */
+#step1, #step2, #step3 {
+  animation: stepIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#step1.step-out, #step2.step-out, #step3.step-out {
+  animation: stepOut 0.2s ease forwards;
+}
+
+@keyframes stepIn {
+  from {
+    opacity: 0;
+    transform: translateX(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes stepOut {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-14px);
+  }
 }
 
 .upload-area {
@@ -633,6 +695,18 @@ h2 {
   flex-direction: column;
   gap: 10px;
   transition: all 0.2s;
+  animation: itemPop 0.35s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+
+@keyframes itemPop {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .file-item:hover {
@@ -897,6 +971,17 @@ h2 {
   min-width: 45px;
   text-align: center;
   color: #333;
+  display: inline-block;
+}
+
+.copy-val.pulse {
+  animation: pulseScale 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes pulseScale {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.35); color: #FF6B35; }
+  100% { transform: scale(1); }
 }
 
 .button-pair {
@@ -948,6 +1033,172 @@ h2 {
   font-size: 12px;
   display: none;
   font-family: inherit;
+}
+
+.pages-input.show {
+  display: block;
+}
+
+/* Acordeón de configuración por archivo */
+.file-config-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.file-config-card {
+  background: white;
+  border: 1.5px solid #e8e8e8;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+  animation: itemPop 0.35s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+
+.file-config-card.is-open {
+  border-color: #FFD4BA;
+  box-shadow: 0 3px 10px rgba(255, 107, 53, 0.08);
+}
+
+.file-config-summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 13px;
+  color: #333;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.file-config-summary:active {
+  background: #FAFAFA;
+}
+
+.file-config-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+  transition: transform 0.25s ease;
+}
+
+.file-config-card.is-open .file-config-icon {
+  transform: scale(1.1);
+}
+
+.file-config-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.file-config-chevron {
+  font-size: 16px;
+  color: #999;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  flex-shrink: 0;
+  display: inline-block;
+}
+
+.file-config-card.is-open .file-config-chevron {
+  transform: rotate(180deg);
+  color: #FF6B35;
+}
+
+.file-config-body-wrap {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.file-config-body-wrap.open {
+  grid-template-rows: 1fr;
+}
+
+.file-config-body-inner {
+  overflow: hidden;
+  min-height: 0;
+}
+
+.file-config-body {
+  padding: 0 14px 14px;
+  border-top: 1px solid #f0f0f0;
+  padding-top: 14px;
+}
+
+.apply-all-btn {
+  width: 100%;
+  padding: 10px;
+  border: 1.5px dashed #FF6B35;
+  border-radius: 8px;
+  background: #FFF5F0;
+  color: #FF6B35;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-bottom: 14px;
+  transition: all 0.2s;
+}
+
+.apply-all-btn:hover {
+  background: #FFE8D6;
+}
+
+.mini-options-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.mini-option-card {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1.5px solid;
+  background: white;
+}
+
+.mini-option-card label {
+  display: block;
+  font-size: 10px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.mini-option-card.naranja { border-color: #FFD4BA; }
+.mini-option-card.naranja label { color: #FF6B35; }
+.mini-option-card.rojo { border-color: #FFCCC0; }
+.mini-option-card.rojo label { color: #CC0000; }
+.mini-option-card.amarillo { border-color: #FFE8B6; }
+.mini-option-card.amarillo label { color: #D4A517; }
+.mini-option-card.azul { border-color: #C5E4F3; }
+.mini-option-card.azul label { color: #0284C7; }
+.mini-option-card.verde { border-color: #D4F2E0; }
+.mini-option-card.verde label { color: #15803D; }
+
+.mini-option-card .copy-counter {
+  gap: 8px;
+}
+
+.mini-option-card .copy-btn {
+  width: 34px;
+  height: 34px;
+  font-size: 16px;
+}
+
+.mini-option-card .copy-val {
+  font-size: 18px;
+  min-width: 28px;
+}
+
+.mini-option-card .option-btn {
+  padding: 8px 6px;
+  font-size: 11px;
 }
 
 .confirmation-card {
@@ -1020,14 +1271,43 @@ h2 {
 }
 
 .summary-box {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 12px;
+  text-align: left;
+}
+
+.summary-file-block {
   background: white;
   border-radius: 10px;
   padding: 14px;
-  margin-bottom: 18px;
-  text-align: left;
   font-size: 12px;
   color: #333;
   border: 1px solid #e8e8e8;
+  animation: itemPop 0.4s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+
+.summary-file-title {
+  font-weight: 700;
+  font-size: 13px;
+  color: #FF6B35;
+  margin-bottom: 6px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.summary-general-box {
+  margin-bottom: 18px;
+}
+
+.summary-general-box .summary-row {
+  background: white;
+  border-radius: 10px;
+  padding: 12px 14px;
+  border: 1px solid #e8e8e8;
+  font-size: 12px;
 }
 
 .summary-row {
@@ -1170,52 +1450,10 @@ h2 {
         <h1>Configura</h1>
         <p class="subtitle">Paso 2 de 3</p>
 
-        <div class="options-grid">
-          <div class="option-card naranja">
-            <label>Copias</label>
-            <div class="copy-counter">
-              <button class="copy-btn naranja" onclick="changeCopies(-1)">−</button>
-              <span class="copy-val" id="copies-val">1</span>
-              <button class="copy-btn naranja active" onclick="changeCopies(1)">+</button>
-            </div>
-          </div>
-
-          <div class="option-card rojo">
-            <label>Color</label>
-            <div class="button-pair">
-              <button class="option-btn rojo active" id="btn-color" onclick="setColor('color')">Color</button>
-              <button class="option-btn rojo" id="btn-bw" onclick="setColor('bw')">B/N</button>
-            </div>
-          </div>
-
-          <div class="option-card amarillo">
-            <label>Tamaño</label>
-            <div class="button-pair">
-              <button class="option-btn amarillo active" id="btn-carta" onclick="setSize('carta')">Carta</button>
-              <button class="option-btn amarillo" id="btn-oficio" onclick="setSize('oficio')">Oficio</button>
-            </div>
-          </div>
-
-          <div class="option-card azul">
-            <label>Caras</label>
-            <div class="button-pair">
-              <button class="option-btn azul active" id="btn-one" onclick="setSides('one')">Una</button>
-              <button class="option-btn azul" id="btn-both" onclick="setSides('both')">Ambas</button>
-            </div>
-          </div>
-
-          <div class="option-card verde" style="grid-column: 1 / -1;">
-            <label>Páginas</label>
-            <div class="button-pair">
-              <button class="option-btn verde active" id="btn-all" onclick="setPages('all')">Todas</button>
-              <button class="option-btn verde" id="btn-custom" onclick="setPages('custom')">Específicas</button>
-            </div>
-            <input type="text" class="pages-input" id="pages-input" placeholder="Ej: 1-5, 7, 9" maxlength="50">
-          </div>
-        </div>
+        <div id="step2FilesList" class="file-config-list"></div>
 
         <div class="form-group">
-          <label class="form-label">Comentarios o instrucciones (opcional)</label>
+          <label class="form-label">Comentarios generales (opcional)</label>
           <textarea id="client-comments" class="form-textarea" placeholder="Ej: Encuadernar, urgente, etc." maxlength="200"></textarea>
           <div class="form-hint">Máximo 200 caracteres</div>
         </div>
@@ -1238,33 +1476,11 @@ h2 {
             <div class="turno-wait">Espera en el mostrador ⏱</div>
           </div>
 
-          <div class="summary-box">
-            <div class="summary-row">
-              <span class="summary-label">Archivo</span>
-              <span class="summary-value" id="summary-file">documento.pdf</span>
-            </div>
-            <div class="summary-row">
-              <span class="summary-label">Copias</span>
-              <span class="summary-value" id="summary-copies">1</span>
-            </div>
-            <div class="summary-row">
-              <span class="summary-label">Color</span>
-              <span class="summary-value" id="summary-color">Color</span>
-            </div>
-            <div class="summary-row">
-              <span class="summary-label">Tamaño</span>
-              <span class="summary-value" id="summary-size">Carta</span>
-            </div>
-            <div class="summary-row">
-              <span class="summary-label">Caras</span>
-              <span class="summary-value" id="summary-sides">Una</span>
-            </div>
-            <div class="summary-row">
-              <span class="summary-label">Páginas</span>
-              <span class="summary-value" id="summary-pages">Todas</span>
-            </div>
+          <div id="summary-box" class="summary-box"></div>
+
+          <div class="summary-general-box">
             <div class="summary-row" id="summary-comments-row" style="display: none;">
-              <span class="summary-label">Notas</span>
+              <span class="summary-label">Notas generales</span>
               <span class="summary-value" id="summary-comments"></span>
             </div>
           </div>
@@ -1349,23 +1565,24 @@ const SUPABASE_ANON_KEY = 'sb_publishable_ncwwe0eQjQD-KdgcjYaQxg__cBVlah0';
 const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 let formData = {
-  files: [], // Array de {file, instructions}
+  files: [], // Array de {file, instructions, copies, color, size, sides, pages, pagesCustom}
   name: '',
-  comments: '',
-  copies: 1,
-  color: 'color',
-  size: 'carta',
-  sides: 'one',
-  pages: 'all'
+  comments: ''
 };
 
 document.getElementById('file-input').addEventListener('change', function(e) {
   if(e.target.files.length > 0) {
-    // Agregar los nuevos archivos a la lista
+    // Agregar los nuevos archivos a la lista con su propia configuración
     for (let file of e.target.files) {
       formData.files.push({
         file: file,
-        instructions: ''
+        instructions: '',
+        copies: 1,
+        color: 'color',
+        size: 'carta',
+        sides: 'one',
+        pages: 'all',
+        pagesCustom: ''
       });
     }
     
@@ -1399,9 +1616,9 @@ function renderFilesList() {
     const icon = iconMap[ext] || '📎';
     
     return `
-      <div class="file-item">
+      <div class="file-item" style="animation-delay: ${index * 0.06}s">
         <div class="file-item-header">
-          <div class="file-item-info">
+          <div class="file-item-info" onclick="showFilePreview(formData.files[${index}].file)" style="cursor: pointer;">
             <div class="file-item-icon">${icon}</div>
             <div class="file-item-name">
               <div class="file-item-filename">${file.name}</div>
@@ -1409,30 +1626,14 @@ function renderFilesList() {
             </div>
           </div>
           <div class="file-item-actions">
-            <button type="button" class="file-btn" onclick="toggleFileInstructions(${index})">📝</button>
             <button type="button" class="file-btn file-btn-remove" onclick="removeFile(${index})">✕</button>
           </div>
-        </div>
-        
-        <div class="file-item-instructions" id="instructions-${index}">
-          <textarea 
-            class="file-item-textarea" 
-            placeholder="Instrucciones específicas para este archivo (ej: urgente, colores específicos, etc.)"
-            maxlength="200"
-            oninput="updateFileInstructions(${index}, this.value); updateCounter(this);"
-          >${item.instructions}</textarea>
-          <div class="file-counter"><span id="counter-${index}">0</span>/200</div>
         </div>
       </div>
     `;
   }).join('');
   
   btn.disabled = false;
-}
-
-function toggleFileInstructions(index) {
-  const el = document.getElementById(`instructions-${index}`);
-  el.classList.toggle('show');
 }
 
 function updateFileInstructions(index, value) {
@@ -1449,6 +1650,169 @@ function removeFile(index) {
   formData.files.splice(index, 1);
   renderFilesList();
   updateFilesFeedback();
+}
+
+function renderStep2FilesList() {
+  const container = document.getElementById('step2FilesList');
+  if (!container) return;
+
+  if (formData.files.length === 0) {
+    container.innerHTML = '';
+    return;
+  }
+
+  container.innerHTML = formData.files.map((item, index) => {
+    const file = item.file;
+    const ext = file.name.split('.').pop().toLowerCase();
+    const iconMap = {
+      'jpg': '🖼️', 'jpeg': '🖼️', 'png': '🖼️', 'gif': '🖼️', 'webp': '🖼️',
+      'pdf': '📄', 'doc': '📄', 'docx': '📄', 'txt': '📝',
+      'xls': '📊', 'xlsx': '📊', 'ppt': '📽️', 'pptx': '📽️',
+      'zip': '📦', 'rar': '📦', '7z': '📦',
+      'mp3': '🎵', 'wav': '🎵', 'mp4': '🎬', 'avi': '🎬'
+    };
+    const icon = iconMap[ext] || '📎';
+    if (item.expanded === undefined) {
+      item.expanded = formData.files.length === 1 || index === 0;
+    }
+    const isOpen = item.expanded ? 'is-open' : '';
+    const wrapOpen = item.expanded ? 'open' : '';
+
+    return `
+      <div class="file-config-card ${isOpen}" data-index="${index}">
+        <div class="file-config-summary" onclick="toggleFileCard(${index})">
+          <span class="file-config-icon">${icon}</span>
+          <span class="file-config-name">${file.name}</span>
+          <span class="file-config-chevron">⌄</span>
+        </div>
+
+        <div class="file-config-body-wrap ${wrapOpen}">
+          <div class="file-config-body-inner">
+            <div class="file-config-body">
+              ${index === 0 && formData.files.length > 1 ? `
+                <button type="button" class="apply-all-btn" onclick="applyConfigToAll(${index})">
+                  📋 Usar esta configuración para todos
+                </button>
+              ` : ''}
+
+              <div class="mini-options-grid">
+                <div class="mini-option-card naranja">
+                  <label>Copias</label>
+                  <div class="copy-counter">
+                    <button type="button" class="copy-btn naranja" onclick="changeFileCopies(${index}, -1)">−</button>
+                    <span class="copy-val" id="file-copies-${index}">${item.copies}</span>
+                    <button type="button" class="copy-btn naranja active" onclick="changeFileCopies(${index}, 1)">+</button>
+                  </div>
+                </div>
+
+                <div class="mini-option-card rojo">
+                  <label>Color</label>
+                  <div class="button-pair">
+                    <button type="button" class="option-btn rojo ${item.color === 'color' ? 'active' : ''}" onclick="setFileColor(${index}, 'color')">Color</button>
+                    <button type="button" class="option-btn rojo ${item.color === 'bw' ? 'active' : ''}" onclick="setFileColor(${index}, 'bw')">B/N</button>
+                  </div>
+                </div>
+
+                <div class="mini-option-card amarillo">
+                  <label>Tamaño</label>
+                  <div class="button-pair">
+                    <button type="button" class="option-btn amarillo ${item.size === 'carta' ? 'active' : ''}" onclick="setFileSize(${index}, 'carta')">Carta</button>
+                    <button type="button" class="option-btn amarillo ${item.size === 'oficio' ? 'active' : ''}" onclick="setFileSize(${index}, 'oficio')">Oficio</button>
+                  </div>
+                </div>
+
+                <div class="mini-option-card azul">
+                  <label>Caras</label>
+                  <div class="button-pair">
+                    <button type="button" class="option-btn azul ${item.sides === 'one' ? 'active' : ''}" onclick="setFileSides(${index}, 'one')">Una</button>
+                    <button type="button" class="option-btn azul ${item.sides === 'both' ? 'active' : ''}" onclick="setFileSides(${index}, 'both')">Ambas</button>
+                  </div>
+                </div>
+
+                <div class="mini-option-card verde" style="grid-column: 1 / -1;">
+                  <label>Páginas</label>
+                  <div class="button-pair">
+                    <button type="button" class="option-btn verde ${item.pages === 'all' ? 'active' : ''}" onclick="setFilePages(${index}, 'all')">Todas</button>
+                    <button type="button" class="option-btn verde ${item.pages === 'custom' ? 'active' : ''}" onclick="setFilePages(${index}, 'custom')">Específicas</button>
+                  </div>
+                  <input type="text" class="pages-input ${item.pages === 'custom' ? 'show' : ''}" id="file-pages-input-${index}" placeholder="Ej: 1-5, 7, 9" maxlength="50" value="${item.pagesCustom || ''}" oninput="updateFilePagesCustom(${index}, this.value)">
+                </div>
+              </div>
+
+              <div class="file-item-instructions show">
+                <textarea
+                  class="file-item-textarea"
+                  placeholder="Instrucciones para este archivo (ej: engargolar, urgente, etc.)"
+                  maxlength="200"
+                  oninput="updateFileInstructions(${index}, this.value); updateCounter(this);"
+                >${item.instructions || ''}</textarea>
+                <div class="file-counter"><span id="step2-counter-${index}">${(item.instructions || '').length}</span>/200</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function toggleFileCard(index) {
+  const item = formData.files[index];
+  item.expanded = !item.expanded;
+
+  const card = document.querySelector(`.file-config-card[data-index="${index}"]`);
+  if (!card) return;
+  const wrap = card.querySelector('.file-config-body-wrap');
+  card.classList.toggle('is-open', item.expanded);
+  wrap.classList.toggle('open', item.expanded);
+}
+
+function changeFileCopies(index, delta) {
+  const item = formData.files[index];
+  item.copies = Math.max(1, item.copies + delta);
+  const el = document.getElementById(`file-copies-${index}`);
+  el.textContent = item.copies;
+  el.classList.remove('pulse');
+  void el.offsetWidth; // reiniciar animación
+  el.classList.add('pulse');
+}
+
+function setFileColor(index, value) {
+  formData.files[index].color = value;
+  renderStep2FilesList();
+}
+
+function setFileSize(index, value) {
+  formData.files[index].size = value;
+  renderStep2FilesList();
+}
+
+function setFileSides(index, value) {
+  formData.files[index].sides = value;
+  renderStep2FilesList();
+}
+
+function setFilePages(index, value) {
+  formData.files[index].pages = value;
+  renderStep2FilesList();
+}
+
+function updateFilePagesCustom(index, value) {
+  formData.files[index].pagesCustom = value;
+}
+
+function applyConfigToAll(sourceIndex) {
+  const source = formData.files[sourceIndex];
+  formData.files.forEach((item, i) => {
+    if (i === sourceIndex) return;
+    item.copies = source.copies;
+    item.color = source.color;
+    item.size = source.size;
+    item.sides = source.sides;
+    item.pages = source.pages;
+    item.pagesCustom = source.pagesCustom;
+  });
+  renderStep2FilesList();
 }
 
 function updateFilesFeedback() {
@@ -1557,46 +1921,48 @@ document.getElementById('client-comments').addEventListener('change', function(e
   formData.comments = e.target.value.trim();
 });
 
-function changeCopies(n) {
-  formData.copies = Math.max(1, Math.min(999, formData.copies + n));
-  document.getElementById('copies-val').textContent = formData.copies;
+function switchStep(hideId, showId, onShow) {
+  const hideEl = document.getElementById(hideId);
+  const showEl = document.getElementById(showId);
+
+  hideEl.classList.add('step-out');
+  setTimeout(() => {
+    hideEl.classList.add('hidden');
+    hideEl.classList.remove('step-out');
+    showEl.classList.remove('hidden');
+    if (onShow) onShow();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, 180);
 }
 
-function setColor(c) {
-  formData.color = c;
-  document.getElementById('btn-color').classList.toggle('active', c === 'color');
-  document.getElementById('btn-bw').classList.toggle('active', c === 'bw');
-}
+function launchConfetti() {
+  const colors = ['#FF6B35', '#FF4444', '#FFD700', '#00A8E8', '#22C55E'];
+  const container = document.createElement('div');
+  container.className = 'confetti-container';
+  document.body.appendChild(container);
 
-function setSize(s) {
-  formData.size = s;
-  document.getElementById('btn-carta').classList.toggle('active', s === 'carta');
-  document.getElementById('btn-oficio').classList.toggle('active', s === 'oficio');
-}
+  for (let i = 0; i < 40; i++) {
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    piece.style.left = Math.random() * 100 + 'vw';
+    piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+    piece.style.animationDelay = (Math.random() * 0.3) + 's';
+    piece.style.animationDuration = (1.6 + Math.random() * 0.8) + 's';
+    piece.style.transform = `rotate(${Math.random() * 360}deg)`;
+    container.appendChild(piece);
+  }
 
-function setSides(s) {
-  formData.sides = s;
-  document.getElementById('btn-one').classList.toggle('active', s === 'one');
-  document.getElementById('btn-both').classList.toggle('active', s === 'both');
-}
-
-function setPages(p) {
-  formData.pages = p;
-  document.getElementById('btn-all').classList.toggle('active', p === 'all');
-  document.getElementById('btn-custom').classList.toggle('active', p === 'custom');
-  document.getElementById('pages-input').style.display = p === 'custom' ? 'block' : 'none';
+  setTimeout(() => container.remove(), 2600);
 }
 
 function goToStep2() {
-  if(!formData.file) {
-    alert('Selecciona un archivo');
+  if(!formData.files || formData.files.length === 0) {
+    alert('Selecciona al menos un archivo');
     return;
   }
-  document.getElementById('step1').classList.add('hidden');
-  document.getElementById('step2').classList.remove('hidden');
   document.getElementById('step1-bar').classList.add('active');
   document.getElementById('step2-bar').classList.add('active');
-  window.scrollTo(0, 0);
+  switchStep('step1', 'step2', renderStep2FilesList);
 }
 
 async function goToStep3() {
@@ -1655,21 +2021,30 @@ async function goToStep3() {
 
       if (uploadError) throw uploadError;
 
+      // Precio individual de este archivo
+      const precioColorArch = fileItem.color === 'color' ? 1.5 : 1;
+      const precioCarasArch = fileItem.sides === 'one' ? 1 : 1.2;
+      const precioArchivo = 1 * precioColorArch * precioCarasArch * fileItem.copies;
+
       uploadedFiles.push({
         ...uploadData,
         nombreArchivo: nombreArchivo,
         nombreOriginal: file.name,
         tipo: file.type,
         tamaño: file.size,
-        instrucciones: fileItem.instructions
+        instrucciones: fileItem.instructions,
+        copias: fileItem.copies,
+        color: fileItem.color,
+        size: fileItem.size,
+        sides: fileItem.sides,
+        pages: fileItem.pages,
+        pagesCustom: fileItem.pagesCustom,
+        precio: precioArchivo
       });
     }
 
-    // 4. Calcular precio (base por todos los archivos)
-    const precioBase = 1;
-    const precioColor = formData.color === 'color' ? 1.5 : 1;
-    const precioCares = formData.sides === 'one' ? 1 : 1.2;
-    const precio = (precioBase * precioColor * precioCares * formData.copies).toFixed(2);
+    // 4. Calcular precio total (suma de todos los archivos)
+    const precioTotal = uploadedFiles.reduce((sum, uf) => sum + uf.precio, 0).toFixed(2);
 
     // 5. Crear pedido en BD
     const { data: pedidoData, error: pedidoError } = await supabaseClient
@@ -1681,13 +2056,8 @@ async function goToStep3() {
           archivo_nombre: formData.files.map(f => f.file.name).join(', '),
           archivo_size: formData.files.reduce((sum, f) => sum + f.file.size, 0),
           cantidad_archivos: formData.files.length,
-          copias: formData.copies,
-          color: formData.color,
-          tamaño: formData.size,
-          caras: formData.sides === 'one' ? 'una' : 'ambas',
-          paginas: formData.pages === 'all' ? 'todas' : document.getElementById('pages-input').value,
           estado: 'nuevo',
-          precio: parseFloat(precio),
+          precio: parseFloat(precioTotal),
           comentarios: formData.comments || null
         }
       ])
@@ -1696,7 +2066,7 @@ async function goToStep3() {
 
     if (pedidoError) throw pedidoError;
 
-    // 6. Guardar referencias de todos los archivos con sus instrucciones
+    // 6. Guardar referencias de todos los archivos con su propia configuración
     const archivosData = uploadedFiles.map(uf => ({
       pedido_id: pedidoData.id,
       nombre_original: uf.nombreOriginal,
@@ -1704,7 +2074,13 @@ async function goToStep3() {
       tipo_archivo: uf.tipo,
       tamaño: uf.tamaño,
       ruta_supabase: uf.path,
-      instrucciones: uf.instrucciones || null
+      instrucciones: uf.instrucciones || null,
+      copias: uf.copias,
+      color: uf.color,
+      tamaño_papel: uf.size,
+      caras: uf.sides === 'one' ? 'una' : 'ambas',
+      paginas: uf.pages === 'all' ? 'todas' : (uf.pagesCustom || 'todas'),
+      precio: uf.precio
     }));
 
     const { error: archivosError } = await supabaseClient
@@ -1714,10 +2090,9 @@ async function goToStep3() {
     if (archivosError) throw archivosError;
 
     // 7. Mostrar confirmación
-    document.getElementById('step2').classList.add('hidden');
-    document.getElementById('step3').classList.remove('hidden');
     document.getElementById('step2-bar').classList.remove('active');
     document.getElementById('step3-bar').classList.add('active');
+    switchStep('step2', 'step3', launchConfetti);
 
     document.getElementById('turno-num').textContent = turno;
 
@@ -1727,27 +2102,45 @@ async function goToStep3() {
       clientEl.style.display = 'block';
     }
 
-    // Mostrar resumen de archivos
-    const summaryFile = document.getElementById('summary-file');
-    if (formData.files.length === 1) {
-      summaryFile.textContent = formData.files[0].file.name;
-    } else {
-      summaryFile.innerHTML = formData.files.map((f, i) => `
-        <div style="font-size: 12px; margin-bottom: 4px;">
-          ${i + 1}. ${f.file.name}${f.instructions ? ` <span style="color: #FF6B35; font-weight: 600;">*</span>` : ''}
+    // Mostrar resumen individual por archivo
+    const summaryBox = document.getElementById('summary-box');
+    summaryBox.innerHTML = uploadedFiles.map((uf, i) => `
+      <div class="summary-file-block" style="animation-delay: ${i * 0.08}s">
+        <div class="summary-file-title">📄 ${uf.nombreOriginal}</div>
+        <div class="summary-row">
+          <span class="summary-label">Copias</span>
+          <span class="summary-value">${uf.copias}</span>
         </div>
-      `).join('');
-    }
-
-    document.getElementById('summary-copies').textContent = formData.copies;
-    document.getElementById('summary-color').textContent = formData.color === 'color' ? 'Color' : 'B/N';
-    document.getElementById('summary-size').textContent = formData.size === 'carta' ? 'Carta' : 'Oficio';
-    document.getElementById('summary-sides').textContent = formData.sides === 'one' ? 'Una' : 'Ambas';
-    document.getElementById('summary-pages').textContent = formData.pages === 'all' ? 'Todas' : document.getElementById('pages-input').value;
+        <div class="summary-row">
+          <span class="summary-label">Color</span>
+          <span class="summary-value">${uf.color === 'color' ? 'Color' : 'B/N'}</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">Tamaño</span>
+          <span class="summary-value">${uf.size === 'carta' ? 'Carta' : 'Oficio'}</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">Caras</span>
+          <span class="summary-value">${uf.sides === 'one' ? 'Una' : 'Ambas'}</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">Páginas</span>
+          <span class="summary-value">${uf.pages === 'all' ? 'Todas' : (uf.pagesCustom || 'Todas')}</span>
+        </div>
+        ${uf.instrucciones ? `
+          <div class="summary-row">
+            <span class="summary-label">Notas</span>
+            <span class="summary-value">${uf.instrucciones}</span>
+          </div>
+        ` : ''}
+      </div>
+    `).join('');
 
     if (formData.comments) {
       document.getElementById('summary-comments').textContent = formData.comments;
       document.getElementById('summary-comments-row').style.display = 'flex';
+    } else {
+      document.getElementById('summary-comments-row').style.display = 'none';
     }
 
     window.scrollTo(0, 0);
@@ -1760,27 +2153,21 @@ async function goToStep3() {
 }
 
 function resetForm() {
-  formData = { files: [], name: '', comments: '', copies: 1, color: 'color', size: 'carta', sides: 'one', pages: 'all' };
+  formData = { files: [], name: '', comments: '' };
   document.getElementById('file-input').value = '';
   document.getElementById('client-name').value = '';
   document.getElementById('client-comments').value = '';
   document.getElementById('file-feedback').textContent = '';
   document.getElementById('file-feedback').className = 'file-feedback';
   document.getElementById('filesList').innerHTML = '';
+  document.getElementById('step2FilesList').innerHTML = '';
   document.getElementById('btn-next1').disabled = true;
-  document.getElementById('copies-val').textContent = '1';
-  document.getElementById('step3').classList.add('hidden');
-  document.getElementById('step1').classList.remove('hidden');
   document.getElementById('step1-bar').classList.remove('active');
   document.getElementById('step2-bar').classList.remove('active');
   document.getElementById('step3-bar').classList.remove('active');
   document.getElementById('step1-bar').classList.add('active');
   document.getElementById('upload-area').classList.remove('error');
-  setColor('color');
-  setSize('carta');
-  setSides('one');
-  setPages('all');
-  window.scrollTo(0, 0);
+  switchStep('step3', 'step1');
 }
 
 function showHelp() {
@@ -1797,11 +2184,6 @@ document.getElementById('helpModal').addEventListener('click', function(e) {
     closeHelp();
   }
 });
-
-setColor('color');
-setSize('carta');
-setSides('one');
-setPages('all');
 </script>
 
 </body>
