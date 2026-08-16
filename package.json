@@ -1,7 +1,7 @@
 {
   "name": "impresiones-crayon",
   "version": "1.0.0",
-  "description": "Sistema de pedidos online para Impresiones Crayón",
+  "description": "Sistema de pedidos online para Impresiones Crayon",
   "type": "module",
   "main": "server.js",
   "scripts": {
@@ -14,7 +14,7 @@
     "crayon",
     "pedidos"
   ],
-  "author": "Impresiones Crayón",
+  "author": "Impresiones Crayon",
   "license": "MIT",
   "dependencies": {
     "express": "^4.18.2",
