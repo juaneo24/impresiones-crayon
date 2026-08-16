@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<title>Impresiones Crayón</title>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  background: #fafafa;
+  color: #333;
+}
+
+.container {
+  width: 100%;
+  min-height: 100vh;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  background: linear-gradient(135deg, #FF6B35 0%, #FF4444 100%);
+  padding: 16px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  gap: 12px;
+}
+
+.logo-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+
+.logo-icon {
+  font-size: 28px;
+  flex-shrink: 0;
+}
+
+.logo-text {
+  font-weight: 700;
+  font-size: 16px;
+  color: white;
+  letter-spacing: -0.3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.help-btn {
+  background: rgba(255,255,255,0.2);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.help-btn:hover {
+  background: rgba(255,255,255,0.3);
+}
+
+.content {
+  flex: 1;
+  width: 100%;
+  padding: 14px 0;
+  display: flex;
+  justify-content: center;
+  overflow: visible;
+}
+
+@media (min-width: 768px) {
+  .content {
+    padding: 32px 20px;
+  }
+}
+
+.page {
+  width: 100%;
+  padding: 0 12px;
+  box-sizing: border-box;
+}
+
+@media (min-width: 500px) {
+  .page {
+    padding: 0;
+    max-width: 500px;
+  }
+}
+
+@media (min-width: 768px) {
+  .page {
+    max-width: 700px;
+  }
+}
+
+.step-indicator {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 20px;
+}
+
+.step-bar {
+  flex: 1;
+  height: 3px;
+  background: #e8e8e8;
+  border-radius: 2px;
+  transition: background 0.3s;
+}
+
+.step-bar.active {
+  background: linear-gradient(90deg, #FF6B35, #FF4444);
+}
+
+.instructions-banner {
+  background: linear-gradient(135deg, #E0F7FF, #F0FDE4);
+  border-left: 4px solid #00A8E8;
+  padding: 12px 12px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.instructions-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: #0284C7;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  margin-bottom: 8px;
+}
+
+.instructions-list {
+  font-size: 12px;
+  color: #555;
+  line-height: 1.5;
+  list-style: none;
+}
+
+.instructions-list li {
+  margin-bottom: 5px;
+  display: flex;
+  gap: 8px;
+}
+
+.instructions-list li:before {
+  content: "→";
+  color: #00A8E8;
+  font-weight: 700;
+  flex-shrink: 0;
+  width: 12px;
+}
+
+h1 {
+  font-size: 28px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 6px;
+  line-height: 1.2;
+  color: #1a1a1a;
+  letter-spacing: -0.5px;
+}
+
+@media (min-width: 768px) {
+  h1 {
+    font-size: 40px;
+  }
+}
+
+.subtitle {
+  font-size: 12px;
+  color: #999;
+  text-align: center;
+  margin-bottom: 24px;
+  font-weight: 500;
+}
+
+@media (min-width: 768px) {
+  .subtitle {
+    font-size: 13px;
+  }
+}
+
+.hidden {
+  display: none !important;
+}
+
+.upload-area {
+  padding: 24px 14px;
+  background: linear-gradient(135deg, #FFF5F0 0%, #FFFEF0 40%, #F0F8FF 70%, #F0FDE4 100%);
+  border: 2px solid #FFB399;
+  border-radius: 12px;
+  text-align: center;
+  margin: 0 0 18px 0;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+  display: block;
+  box-sizing: border-box;
+}
+
+.upload-area:hover {
+  border-color: #FF6B35;
+  background: linear-gradient(135deg, #FFF0E6 0%, #FFFEF0 40%, #E0F7FF 70%, #F0FDE4 100%);
+  box-shadow: 0 2px 8px rgba(255, 107, 53, 0.1);
+}
+
+.upload-area:active {
+  transform: scale(0.98);
+}
+
+.upload-area.error {
+  border-color: #EF4444;
+  background: #FEE2E2;
+}
+
+@media (min-width: 768px) {
+  .upload-area {
+    padding: 48px 24px;
+  }
+}
+
+.upload-icon {
+  font-size: 40px;
+  margin-bottom: 12px;
+  display: block;
+}
+
+@media (min-width: 768px) {
+  .upload-icon {
+    font-size: 52px;
+  }
+}
+
+.upload-text {
+  color: #FF6B35;
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+@media (min-width: 768px) {
+  .upload-text {
+    font-size: 16px;
+  }
+}
+
+.upload-hint {
+  color: #888;
+  font-size: 12px;
+  font-weight: 400;
+  margin-bottom: 6px;
+}
+
+#file-input {
+  display: none;
+}
+
+.file-feedback {
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  font-size: 12px;
+  display: none;
+  font-weight: 500;
+}
+
+.file-feedback.success {
+  display: block;
+  background: #F0FDE4;
+  border: 1px solid #86EFAC;
+  color: #15803D;
+}
+
+.file-feedback.success:before {
+  content: "✓ ";
+  font-weight: 700;
+}
+
+.file-feedback.error {
+  display: block;
+  background: #FEE2E2;
+  border: 1px solid #FECACA;
+  color: #DC2626;
+}
+
+.file-feedback.error:before {
+  content: "✗ ";
+  font-weight: 700;
+}
+
+.loading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.form-input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+  transition: border-color 0.2s, background 0.2s;
+  background: white;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #FF6B35;
+  box-shadow: 0 0 0 2px rgba(255, 107, 53, 0.1);
+}
+
+.form-input::placeholder {
+  color: #aaa;
+}
+
+.form-hint {
+  font-size: 11px;
+  color: #999;
+  margin-top: 5px;
+  font-style: italic;
+}
+
+.options-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+@media (min-width: 480px) {
+  .options-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.option-card {
+  padding: 14px;
+  border-radius: 10px;
+  border: 1.5px solid;
+  background: white;
+  transition: all 0.2s;
+}
+
+.option-card:hover {
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+}
+
+.option-card label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.option-card.naranja { border-color: #FFD4BA; }
+.option-card.naranja label { color: #FF6B35; }
+
+.option-card.rojo { border-color: #FFCCC0; }
+.option-card.rojo label { color: #CC0000; }
+
+.option-card.amarillo { border-color: #FFE8B6; }
+.option-card.amarillo label { color: #D4A517; }
+
+.option-card.azul { border-color: #C5E4F3; }
+.option-card.azul label { color: #0284C7; }
+
+.option-card.verde { border-color: #D4F2E0; }
+.option-card.verde label { color: #15803D; }
+
+.copy-counter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.copy-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  border: 2px solid;
+  background: white;
+  font-size: 20px;
+  font-weight: 600;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: all 0.15s;
+}
+
+.copy-btn:hover {
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+.copy-btn:active {
+  transform: scale(0.93);
+}
+
+.copy-btn.naranja { border-color: #FF6B35; color: #FF6B35; }
+.copy-btn.naranja.active { background: #FF6B35; color: white; }
+
+.copy-val {
+  font-size: 28px;
+  font-weight: 700;
+  min-width: 45px;
+  text-align: center;
+  color: #333;
+}
+
+.button-pair {
+  display: flex;
+  gap: 8px;
+}
+
+.option-btn {
+  flex: 1;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1.5px solid #ddd;
+  background: white;
+  color: #666;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: all 0.15s;
+  text-transform: uppercase;
+  letter-spacing: 0.2px;
+}
+
+.option-btn:hover {
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+}
+
+.option-btn:active {
+  transform: scale(0.95);
+}
+
+.option-btn.active {
+  background: white;
+  border-width: 2px;
+}
+
+.option-btn.naranja.active { border-color: #FF6B35; color: #FF6B35; }
+.option-btn.rojo.active { border-color: #FF0000; color: #CC0000; }
+.option-btn.amarillo.active { border-color: #FFD700; color: #D4A517; }
+.option-btn.azul.active { border-color: #00A8E8; color: #0284C7; }
+.option-btn.verde.active { border-color: #22C55E; color: #15803D; }
+
+.pages-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1.5px solid #22C55E;
+  border-radius: 8px;
+  margin-top: 8px;
+  font-size: 12px;
+  display: none;
+  font-family: inherit;
+}
+
+.confirmation-card {
+  background: linear-gradient(135deg, #FFF5F0 0%, #FFFEF0 40%, #F0F8FF 70%, #F0FDE4 100%);
+  border: 2px solid #FF6B35;
+  border-radius: 14px;
+  padding: 28px 20px;
+  text-align: center;
+}
+
+.checkmark {
+  font-size: 52px;
+  margin-bottom: 14px;
+  display: block;
+  animation: bounce 0.6s;
+}
+
+.confirmation-h2 {
+  color: #FF6B35;
+  font-size: 26px;
+  margin-bottom: 6px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.confirmation-subtitle {
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 20px;
+  font-weight: 400;
+}
+
+.turno-box {
+  background: white;
+  border: 2px solid #FF6B35;
+  border-radius: 12px;
+  padding: 20px 16px;
+  margin-bottom: 18px;
+}
+
+.turno-label {
+  color: #999;
+  font-size: 11px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.turno-number {
+  font-size: 44px;
+  font-weight: 900;
+  color: #FF6B35;
+  letter-spacing: 3px;
+  font-family: 'Courier New', monospace;
+  margin-bottom: 10px;
+}
+
+.turno-client {
+  font-size: 14px;
+  color: #333;
+  font-weight: 600;
+}
+
+.turno-wait {
+  color: #999;
+  font-size: 12px;
+  margin-top: 6px;
+  font-style: italic;
+}
+
+.summary-box {
+  background: white;
+  border-radius: 10px;
+  padding: 14px;
+  margin-bottom: 18px;
+  text-align: left;
+  font-size: 12px;
+  color: #333;
+  border: 1px solid #e8e8e8;
+}
+
+.summary-row {
+  padding: 8px 0;
+  border-bottom: 1px solid #f0f0f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.summary-row:last-child {
+  border-bottom: none;
+}
+
+.summary-label {
+  font-weight: 600;
+  color: #666;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.2px;
+}
+
+.summary-value {
+  color: #333;
+  font-weight: 600;
+  text-align: right;
+}
+
+.btn {
+  width: 100%;
+  padding: 14px 16px;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: all 0.15s;
+  margin-bottom: 10px;
+  letter-spacing: 0.2px;
+  text-transform: uppercase;
+}
+
+.btn:hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #FF6B35 0%, #FF0000 100%);
+  color: white;
+}
+
+.btn-secondary {
+  background: #FFD700;
+  color: #333;
+}
+
+.btn-gradient {
+  background: linear-gradient(90deg, #FF6B35 0%, #FF4444 100%);
+  color: white;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.step-label {
+  color: #999;
+  text-align: center;
+  font-size: 11px;
+  margin: 0;
+  font-weight: 500;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.12); }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <div class="logo-section">
+      <div class="logo-icon">🖨️</div>
+      <div class="logo-text">Crayón</div>
+    </div>
+    <button class="help-btn" onclick="showHelp()">? Ayuda</button>
+  </div>
+
+  <div class="content">
+    <div class="page">
+      <div class="step-indicator">
+        <div class="step-bar active" id="step1-bar"></div>
+        <div class="step-bar" id="step2-bar"></div>
+        <div class="step-bar" id="step3-bar"></div>
+      </div>
+
+      <!-- STEP 1: Upload & Name -->
+      <div id="step1">
+        <div class="instructions-banner">
+          <div class="instructions-title">¡Hola! Bienvenido</div>
+          <ul class="instructions-list">
+            <li>Sube tu archivo aquí</li>
+            <li>Recibe tu número de turno</li>
+            <li>¡Listo!</li>
+          </ul>
+        </div>
+
+        <h1>Tu impresión</h1>
+        <p class="subtitle">Paso 1 de 3</p>
+
+        <label class="upload-area" for="file-input" id="upload-area">
+          <span class="upload-icon">📄</span>
+          <div class="upload-text">Toca para seleccionar</div>
+          <div class="upload-hint">PDF, Word, JPG, PNG</div>
+        </label>
+        <input type="file" id="file-input" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif">
+
+        <div class="file-feedback" id="file-feedback"></div>
+
+        <div class="form-group">
+          <label class="form-label">Tu nombre (opcional)</label>
+          <input type="text" id="client-name" class="form-input" placeholder="Ej: Juan, María" maxlength="50">
+          <div class="form-hint">Para identificar tu pedido</div>
+        </div>
+
+        <button class="btn btn-primary" id="btn-next1" onclick="goToStep2()" disabled>Continuar →</button>
+        <p class="step-label">Paso 1 de 3</p>
+      </div>
+
+      <!-- STEP 2: Options -->
+      <div id="step2" class="hidden">
+        <h1>Configura</h1>
+        <p class="subtitle">Paso 2 de 3</p>
+
+        <div class="options-grid">
+          <div class="option-card naranja">
+            <label>Copias</label>
+            <div class="copy-counter">
+              <button class="copy-btn naranja" onclick="changeCopies(-1)">−</button>
+              <span class="copy-val" id="copies-val">1</span>
+              <button class="copy-btn naranja active" onclick="changeCopies(1)">+</button>
+            </div>
+          </div>
+
+          <div class="option-card rojo">
+            <label>Color</label>
+            <div class="button-pair">
+              <button class="option-btn rojo active" id="btn-color" onclick="setColor('color')">Color</button>
+              <button class="option-btn rojo" id="btn-bw" onclick="setColor('bw')">B/N</button>
+            </div>
+          </div>
+
+          <div class="option-card amarillo">
+            <label>Tamaño</label>
+            <div class="button-pair">
+              <button class="option-btn amarillo active" id="btn-carta" onclick="setSize('carta')">Carta</button>
+              <button class="option-btn amarillo" id="btn-oficio" onclick="setSize('oficio')">Oficio</button>
+            </div>
+          </div>
+
+          <div class="option-card azul">
+            <label>Caras</label>
+            <div class="button-pair">
+              <button class="option-btn azul active" id="btn-one" onclick="setSides('one')">Una</button>
+              <button class="option-btn azul" id="btn-both" onclick="setSides('both')">Ambas</button>
+            </div>
+          </div>
+
+          <div class="option-card verde" style="grid-column: 1 / -1;">
+            <label>Páginas</label>
+            <div class="button-pair">
+              <button class="option-btn verde active" id="btn-all" onclick="setPages('all')">Todas</button>
+              <button class="option-btn verde" id="btn-custom" onclick="setPages('custom')">Específicas</button>
+            </div>
+            <input type="text" class="pages-input" id="pages-input" placeholder="Ej: 1-5, 7, 9" maxlength="50">
+          </div>
+        </div>
+
+        <button class="btn btn-gradient" id="btn-enviar" onclick="goToStep3()">Enviar →</button>
+        <p class="step-label">Paso 2 de 3</p>
+      </div>
+
+      <!-- STEP 3: Confirmation -->
+      <div id="step3" class="hidden">
+        <div class="confirmation-card">
+          <span class="checkmark">✓</span>
+          <h2 class="confirmation-h2">¡Listo!</h2>
+          <p class="confirmation-subtitle">Tu pedido está en la fila</p>
+
+          <div class="turno-box">
+            <div class="turno-label">Número de turno</div>
+            <div class="turno-number" id="turno-num">A-001</div>
+            <div class="turno-client" id="turno-client" style="display: none;"></div>
+            <div class="turno-wait">Espera en el mostrador ⏱</div>
+          </div>
+
+          <div class="summary-box">
+            <div class="summary-row">
+              <span class="summary-label">Archivo</span>
+              <span class="summary-value" id="summary-file">documento.pdf</span>
+            </div>
+            <div class="summary-row">
+              <span class="summary-label">Copias</span>
+              <span class="summary-value" id="summary-copies">1</span>
+            </div>
+            <div class="summary-row">
+              <span class="summary-label">Color</span>
+              <span class="summary-value" id="summary-color">Color</span>
+            </div>
+            <div class="summary-row">
+              <span class="summary-label">Tamaño</span>
+              <span class="summary-value" id="summary-size">Carta</span>
+            </div>
+            <div class="summary-row">
+              <span class="summary-label">Caras</span>
+              <span class="summary-value" id="summary-sides">Una</span>
+            </div>
+            <div class="summary-row">
+              <span class="summary-label">Páginas</span>
+              <span class="summary-value" id="summary-pages">Todas</span>
+            </div>
+          </div>
+
+          <button class="btn btn-secondary" onclick="resetForm()">← Otra impresión</button>
+          <p class="step-label">Paso 3 de 3</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// API Backend (Express server) - no Supabase directo
+const API_URL = window.location.origin + '/api';
+
+let formData = {
+  file: null,
+  name: '',
+  copies: 1,
+  color: 'color',
+  size: 'carta',
+  sides: 'one',
+  pages: 'all'
+};
+
+document.getElementById('file-input').addEventListener('change', function(e) {
+  const feedback = document.getElementById('file-feedback');
+  const uploadArea = document.getElementById('upload-area');
+  const btn = document.getElementById('btn-next1');
+
+  if(e.target.files.length > 0) {
+    const file = e.target.files[0];
+    const validTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'image/jpeg', 'image/png', 'image/gif'];
+    
+    if(!validTypes.includes(file.type)) {
+      feedback.className = 'file-feedback error';
+      feedback.textContent = `Tipo no permitido`;
+      uploadArea.classList.add('error');
+      btn.disabled = true;
+      formData.file = null;
+      return;
+    }
+
+    formData.file = file;
+    feedback.className = 'file-feedback success';
+    feedback.textContent = file.name;
+    uploadArea.classList.remove('error');
+    btn.disabled = false;
+  }
+});
+
+document.getElementById('client-name').addEventListener('change', function(e) {
+  formData.name = e.target.value.trim();
+});
+
+function changeCopies(n) {
+  formData.copies = Math.max(1, Math.min(999, formData.copies + n));
+  document.getElementById('copies-val').textContent = formData.copies;
+}
+
+function setColor(c) {
+  formData.color = c;
+  document.getElementById('btn-color').classList.toggle('active', c === 'color');
+  document.getElementById('btn-bw').classList.toggle('active', c === 'bw');
+}
+
+function setSize(s) {
+  formData.size = s;
+  document.getElementById('btn-carta').classList.toggle('active', s === 'carta');
+  document.getElementById('btn-oficio').classList.toggle('active', s === 'oficio');
+}
+
+function setSides(s) {
+  formData.sides = s;
+  document.getElementById('btn-one').classList.toggle('active', s === 'one');
+  document.getElementById('btn-both').classList.toggle('active', s === 'both');
+}
+
+function setPages(p) {
+  formData.pages = p;
+  document.getElementById('btn-all').classList.toggle('active', p === 'all');
+  document.getElementById('btn-custom').classList.toggle('active', p === 'custom');
+  document.getElementById('pages-input').style.display = p === 'custom' ? 'block' : 'none';
+}
+
+function goToStep2() {
+  if(!formData.file) {
+    alert('Selecciona un archivo');
+    return;
+  }
+  document.getElementById('step1').classList.add('hidden');
+  document.getElementById('step2').classList.remove('hidden');
+  document.getElementById('step1-bar').classList.add('active');
+  document.getElementById('step2-bar').classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+async function goToStep3() {
+  const btn = document.getElementById('btn-enviar');
+  btn.disabled = true;
+  btn.classList.add('loading');
+
+  try {
+    const formDataObj = new FormData();
+    formDataObj.append('archivo', formData.file);
+    formDataObj.append('cliente_nombre', formData.name);
+    formDataObj.append('copias', formData.copies);
+    formDataObj.append('color', formData.color);
+    formDataObj.append('tamaño', formData.size);
+    formDataObj.append('caras', formData.sides === 'one' ? 'una' : 'ambas');
+    formDataObj.append('paginas', formData.pages === 'all' ? 'todas' : document.getElementById('pages-input').value);
+
+    const response = await fetch(`${API_URL}/pedidos`, {
+      method: 'POST',
+      body: formDataObj
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      alert('Error: ' + error.error);
+      btn.disabled = false;
+      btn.classList.remove('loading');
+      return;
+    }
+
+    const resultado = await response.json();
+
+    document.getElementById('step2').classList.add('hidden');
+    document.getElementById('step3').classList.remove('hidden');
+    document.getElementById('step2-bar').classList.remove('active');
+    document.getElementById('step3-bar').classList.add('active');
+
+    document.getElementById('turno-num').textContent = resultado.turno;
+
+    if (resultado.cliente_nombre && resultado.cliente_nombre !== 'Sin nombre') {
+      const clientEl = document.getElementById('turno-client');
+      clientEl.textContent = resultado.cliente_nombre;
+      clientEl.style.display = 'block';
+    }
+
+    document.getElementById('summary-file').textContent = resultado.archivo;
+    document.getElementById('summary-copies').textContent = resultado.copias;
+    document.getElementById('summary-color').textContent = resultado.color === 'color' ? 'Color' : 'B/N';
+    document.getElementById('summary-size').textContent = resultado.tamaño === 'carta' ? 'Carta' : 'Oficio';
+    document.getElementById('summary-sides').textContent = resultado.caras === 'una' ? 'Una' : 'Ambas';
+    document.getElementById('summary-pages').textContent = resultado.paginas === 'todas' ? 'Todas' : resultado.paginas;
+
+    window.scrollTo(0, 0);
+  } catch (error) {
+    console.error(error);
+    alert('Error al enviar: ' + error.message);
+    btn.disabled = false;
+    btn.classList.remove('loading');
+  }
+}
+
+function resetForm() {
+  formData = { file: null, name: '', copies: 1, color: 'color', size: 'carta', sides: 'one', pages: 'all' };
+  document.getElementById('file-input').value = '';
+  document.getElementById('client-name').value = '';
+  document.getElementById('file-feedback').textContent = '';
+  document.getElementById('file-feedback').className = 'file-feedback';
+  document.getElementById('btn-next1').disabled = true;
+  document.getElementById('copies-val').textContent = '1';
+  document.getElementById('step3').classList.add('hidden');
+  document.getElementById('step1').classList.remove('hidden');
+  document.getElementById('step1-bar').classList.remove('active');
+  document.getElementById('step2-bar').classList.remove('active');
+  document.getElementById('step3-bar').classList.remove('active');
+  document.getElementById('step1-bar').classList.add('active');
+  document.getElementById('upload-area').classList.remove('error');
+  setColor('color');
+  setSize('carta');
+  setSides('one');
+  setPages('all');
+  window.scrollTo(0, 0);
+}
+
+function showHelp() {
+  alert('📋 PASOS:\n\n1️⃣ Sube archivo\n2️⃣ Elige opciones\n3️⃣ Recibe turno\n\n¿Ayuda? Muestra teléfono al encargado.');
+}
+
+setColor('color');
+setSize('carta');
+setSides('one');
+setPages('all');
+</script>
+
+</body>
+</html>

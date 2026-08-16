@@ -1,0 +1,26 @@
+{
+  "name": "impresiones-crayon",
+  "version": "1.0.0",
+  "description": "Sistema de pedidos online para Impresiones Crayón",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js",
+    "build": "echo 'Build complete'"
+  },
+  "keywords": ["impresiones", "crayon", "pedidos"],
+  "author": "Impresiones Crayón",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "@supabase/supabase-js": "^2.38.0",
+    "dotenv": "^16.3.1",
+    "multer": "^1.4.5-lts.1",
+    "uuid": "^9.0.0"
+  },
+  "engines": {
+    "node": "18.x"
+  }
+}
