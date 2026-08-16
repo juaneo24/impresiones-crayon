@@ -9,7 +9,11 @@
     "start": "node server.js",
     "build": "echo 'Build complete'"
   },
-  "keywords": ["impresiones", "crayon", "pedidos"],
+  "keywords": [
+    "impresiones",
+    "crayon",
+    "pedidos"
+  ],
   "author": "Impresiones Crayón",
   "license": "MIT",
   "dependencies": {
@@ -21,6 +25,6 @@
     "uuid": "^9.0.0"
   },
   "engines": {
-    "node": "20.x"
+    "node": "24.x"
   }
 }
