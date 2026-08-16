@@ -1107,10 +1107,10 @@ async function deleteFile(archivoId, nombreArchivo) {
   }
 
   try {
-    // Obtener la ruta del archivo
+    // Obtener la ruta y pedido_id del archivo
     const { data: archivo, error: fetchError } = await supabaseClient
       .from('archivos')
-      .select('ruta_supabase')
+      .select('ruta_supabase, pedido_id')
       .eq('id', archivoId)
       .single();
 
@@ -1131,8 +1131,29 @@ async function deleteFile(archivoId, nombreArchivo) {
 
     if (deleteError) throw deleteError;
 
+    // Verificar si hay más archivos para este pedido
+    const { data: archivosRestantes, error: checkError } = await supabaseClient
+      .from('archivos')
+      .select('id')
+      .eq('pedido_id', archivo.pedido_id);
+
+    if (checkError) throw checkError;
+
+    // Si no hay más archivos, borrar también el pedido
+    if (archivosRestantes.length === 0) {
+      await supabaseClient
+        .from('pedidos')
+        .delete()
+        .eq('id', archivo.pedido_id);
+    }
+
     // Refrescar
     loadQueue();
+  } catch (error) {
+    console.error('Error borrando archivo:', error);
+    alert('Error al borrar: ' + error.message);
+  }
+}
   } catch (error) {
     console.error('Error borrando archivo:', error);
     alert('Error al borrar: ' + error.message);
