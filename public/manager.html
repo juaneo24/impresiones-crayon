@@ -403,15 +403,32 @@ html, body {
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
-const API_URL = window.location.origin + '/api';
+// Supabase Client - Conexión directa
+const { createClient } = supabase;
+const SUPABASE_URL = 'https://hzmdonzqayybifpzqtnb.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_ncwwe0eQjQD-KdgcjYaQxg__cBVlah0';
+
+const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 async function loadQueue() {
   try {
-    const response = await fetch(`${API_URL}/pedidos`);
-    if (!response.ok) throw new Error('Error al cargar');
+    const { data: pedidos, error } = await supabaseClient
+      .from('pedidos')
+      .select('*')
+      .order('created_at', { ascending: false });
 
-    const pedidos = await response.json();
+    if (error) throw error;
+
+    // Obtener archivos de cada pedido
+    const { data: archivos, error: archivosError } = await supabaseClient
+      .from('archivos')
+      .select('*');
+
+    if (archivosError) throw archivosError;
+
     const queueList = document.getElementById('queue-list');
     const emptyQueue = document.getElementById('empty-queue');
 
@@ -423,42 +440,69 @@ async function loadQueue() {
       emptyQueue.style.display = 'block';
     } else {
       emptyQueue.style.display = 'none';
-      queueList.innerHTML = activePedidos.map(p => `
-        <div class="queue-item">
-          <div class="queue-header">
-            <div class="turno-badge" style="color: #FF6B35;">${p.turno}</div>
-            <span class="estado-badge estado-${p.estado}">${translateEstado(p.estado)}</span>
-          </div>
-          
-          ${p.cliente_nombre ? `<div class="client-name">👤 ${p.cliente_nombre}</div>` : ''}
-          
-          <div class="file-name">📄 ${p.archivo_nombre}</div>
+      queueList.innerHTML = activePedidos.map(p => {
+        // Obtener archivos de este pedido
+        const pedidoArchivos = archivos.filter(a => a.pedido_id === p.id) || [];
+        const cantArchivos = pedidoArchivos.length || (p.cantidad_archivos || 1);
+        
+        // Renderizar lista de archivos
+        const archivosHTML = pedidoArchivos.length > 0
+          ? pedidoArchivos.map((a, i) => `
+              <div style="font-size: 12px; padding: 6px; background: #FAFAFA; border-radius: 4px; margin-bottom: 6px;">
+                <div style="font-weight: 600; color: #333; margin-bottom: 2px;">📄 ${a.nombre_original}</div>
+                ${a.instrucciones ? `<div style="font-size: 11px; color: #FF6B35; font-weight: 500;">💬 ${a.instrucciones}</div>` : ''}
+              </div>
+            `).join('')
+          : `<div style="font-size: 12px; color: #999;">📄 ${p.archivo_nombre}</div>`;
 
-          <div class="queue-details">
-            <div class="detail-item">
-              <div class="detail-label">Copias</div>
-              <div class="detail-value">${p.copias}</div>
+        return `
+          <div class="queue-item">
+            <div class="queue-header">
+              <div class="turno-badge" style="color: #FF6B35;">${p.turno}</div>
+              <span class="estado-badge estado-${p.estado}">${translateEstado(p.estado)}</span>
             </div>
-            <div class="detail-item">
-              <div class="detail-label">Color</div>
-              <div class="detail-value">${p.color === 'color' ? 'Color' : 'B/N'}</div>
+            
+            ${p.cliente_nombre ? `<div class="client-name">👤 ${p.cliente_nombre}</div>` : ''}
+            
+            <div style="font-size: 11px; color: #999; margin-bottom: 8px;">📦 ${cantArchivos} archivo${cantArchivos !== 1 ? 's' : ''}</div>
+            
+            <div style="margin-bottom: 12px;">
+              ${archivosHTML}
             </div>
-            <div class="detail-item">
-              <div class="detail-label">Tamaño</div>
-              <div class="detail-value">${p.tamaño.charAt(0).toUpperCase() + p.tamaño.slice(1)}</div>
-            </div>
-            <div class="detail-item">
-              <div class="detail-label">Caras</div>
-              <div class="detail-value">${p.caras === 'una' ? 'Una' : 'Ambas'}</div>
-            </div>
-          </div>
 
-          <div class="action-buttons">
-            <button class="action-btn btn-download" onclick="downloadFile('${p.id}', '${p.archivo_nombre}')">Descargar</button>
-            ${getActionButtons(p.estado, p.id).join('')}
+            ${p.comentarios ? `
+              <div style="font-size: 12px; background: #FFF5F0; padding: 8px; border-radius: 4px; margin-bottom: 8px; border-left: 3px solid #FF6B35;">
+                <div style="color: #FF6B35; font-weight: 600; margin-bottom: 2px;">📝 Notas generales:</div>
+                <div style="color: #666;">${p.comentarios}</div>
+              </div>
+            ` : ''}
+
+            <div class="queue-details">
+              <div class="detail-item">
+                <div class="detail-label">Copias</div>
+                <div class="detail-value">${p.copias}</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Color</div>
+                <div class="detail-value">${p.color === 'color' ? 'Color' : 'B/N'}</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Tamaño</div>
+                <div class="detail-value">${p.tamaño.charAt(0).toUpperCase() + p.tamaño.slice(1)}</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Caras</div>
+                <div class="detail-value">${p.caras === 'una' ? 'Una' : 'Ambas'}</div>
+              </div>
+            </div>
+
+            <div class="action-buttons">
+              <button class="action-btn btn-download" onclick="downloadFiles('${p.id}')">Descargar</button>
+              ${getActionButtons(p.estado, p.id).join('')}
+            </div>
           </div>
-        </div>
-      `).join('');
+        `;
+      }).join('');
     }
 
     updateStats(pedidos);
@@ -497,13 +541,12 @@ function getActionButtons(estado, pedidoId) {
 
 async function updatePedido(pedidoId, nuevoEstado) {
   try {
-    const response = await fetch(`${API_URL}/pedidos/${pedidoId}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ estado: nuevoEstado })
-    });
+    const { error } = await supabaseClient
+      .from('pedidos')
+      .update({ estado: nuevoEstado, updated_at: new Date() })
+      .eq('id', pedidoId);
 
-    if (!response.ok) throw new Error('Error al actualizar');
+    if (error) throw error;
 
     loadQueue();
   } catch (error) {
@@ -512,20 +555,42 @@ async function updatePedido(pedidoId, nuevoEstado) {
   }
 }
 
-async function downloadFile(pedidoId, nombreArchivo) {
+async function downloadFiles(pedidoId) {
   try {
-    const response = await fetch(`${API_URL}/descargar/${pedidoId}`);
-    if (!response.ok) throw new Error('Error al descargar');
+    // Obtener todos los archivos del pedido
+    const { data: archivos, error: archivoError } = await supabaseClient
+      .from('archivos')
+      .select('*')
+      .eq('pedido_id', pedidoId);
 
-    const blob = await response.blob();
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = nombreArchivo;
-    a.click();
-    window.URL.revokeObjectURL(url);
+    if (archivoError) throw archivoError;
+    if (!archivos || archivos.length === 0) throw new Error('No hay archivos');
+
+    // Descargar cada archivo
+    for (const archivo of archivos) {
+      const { data, error: downloadError } = await supabaseClient.storage
+        .from('pedidos')
+        .download(archivo.ruta_supabase);
+
+      if (downloadError) {
+        console.error(`Error descargando ${archivo.nombre_original}:`, downloadError);
+        continue;
+      }
+
+      // Crear link de descarga
+      const url = window.URL.createObjectURL(data);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = archivo.nombre_original;
+      a.click();
+      window.URL.revokeObjectURL(url);
+
+      // Pequeño delay entre descargas
+      await new Promise(resolve => setTimeout(resolve, 300));
+    }
   } catch (error) {
-    alert('Error: ' + error.message);
+    console.error(error);
+    alert('Error al descargar: ' + error.message);
   }
 }
 

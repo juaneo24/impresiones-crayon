@@ -133,58 +133,58 @@ html, body {
   background: linear-gradient(90deg, #FF6B35, #FF4444);
 }
 
-.instructions-banner {
-  background: linear-gradient(135deg, #E0F7FF, #F0FDE4);
-  border-left: 4px solid #00A8E8;
-  padding: 12px 12px;
+.welcome-banner {
+  background: linear-gradient(135deg, #FFE8D6 0%, #FFF0E6 100%);
+  border-left: 4px solid #FF6B35;
+  padding: 12px 14px;
   border-radius: 8px;
   margin-bottom: 16px;
+  text-align: left;
 }
 
-.instructions-title {
-  font-size: 11px;
+.welcome-text {
+  font-size: 13px;
+  color: #333;
+  line-height: 1.6;
+  font-weight: 500;
+  margin: 0;
+}
+
+.welcome-emoji {
+  font-size: 16px;
+  margin-right: 6px;
+}
+
+.welcome-bold {
   font-weight: 700;
-  color: #0284C7;
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
-  margin-bottom: 8px;
-}
-
-.instructions-list {
-  font-size: 12px;
-  color: #555;
-  line-height: 1.5;
-  list-style: none;
-}
-
-.instructions-list li {
-  margin-bottom: 5px;
-  display: flex;
-  gap: 8px;
-}
-
-.instructions-list li:before {
-  content: "→";
-  color: #00A8E8;
-  font-weight: 700;
-  flex-shrink: 0;
-  width: 12px;
+  color: #FF6B35;
 }
 
 h1 {
   font-size: 28px;
-  font-weight: 700;
+  font-weight: 800;
   text-align: center;
   margin-bottom: 6px;
   line-height: 1.2;
   color: #1a1a1a;
   letter-spacing: -0.5px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 @media (min-width: 768px) {
   h1 {
     font-size: 40px;
+    font-weight: 900;
+    letter-spacing: -1px;
   }
+}
+
+h2 {
+  font-size: 22px;
+  font-weight: 700;
+  color: #FF6B35;
+  margin-bottom: 12px;
+  letter-spacing: -0.3px;
 }
 
 .subtitle {
@@ -193,6 +193,8 @@ h1 {
   text-align: center;
   margin-bottom: 24px;
   font-weight: 500;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
 }
 
 @media (min-width: 768px) {
@@ -314,6 +316,436 @@ h1 {
   pointer-events: none;
 }
 
+/* Modal de Ayuda */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  animation: fadeIn 0.2s;
+}
+
+.modal.show {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 16px;
+  padding: 28px 24px;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  animation: slideUp 0.3s;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.modal-icon {
+  font-size: 32px;
+}
+
+.modal-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: #FF6B35;
+  margin: 0;
+}
+
+.modal-body {
+  margin-bottom: 24px;
+}
+
+.help-step {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.help-step:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.help-number {
+  background: linear-gradient(135deg, #FF6B35 0%, #FF4444 100%);
+  color: white;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.help-text {
+  font-size: 14px;
+  color: #333;
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+.help-footer {
+  background: #FFF5F0;
+  border-radius: 10px;
+  padding: 12px;
+  text-align: center;
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 16px;
+  border-left: 4px solid #FF6B35;
+}
+
+.modal-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.modal-btn {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.modal-btn-primary {
+  background: linear-gradient(135deg, #FF6B35 0%, #FF4444 100%);
+  color: white;
+}
+
+.modal-btn-primary:hover {
+  box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+}
+
+.modal-btn-primary:active {
+  transform: scale(0.96);
+}
+
+.modal-btn-secondary {
+  background: #F3F4F6;
+  color: #333;
+  border: 1px solid #E5E7EB;
+}
+
+.modal-btn-secondary:hover {
+  background: #E5E7EB;
+}
+
+.modal-btn-secondary:active {
+  transform: scale(0.96);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Visualizador de Archivos */
+.file-viewer-modal {
+  display: none;
+  position: fixed;
+  z-index: 9998;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  animation: fadeIn 0.2s;
+}
+
+.file-viewer-modal.show {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.file-viewer-container {
+  background: white;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.3s;
+}
+
+.file-viewer-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.file-viewer-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #333;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+}
+
+.file-viewer-close {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #999;
+  transition: color 0.2s;
+  padding: 4px 8px;
+}
+
+.file-viewer-close:hover {
+  color: #333;
+}
+
+.file-viewer-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+}
+
+.file-preview-image {
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 8px;
+}
+
+.file-preview-pdf {
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+}
+
+.file-preview-generic {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  color: #999;
+}
+
+.file-icon {
+  font-size: 64px;
+}
+
+.file-type-text {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.file-viewer-footer {
+  padding: 16px 20px;
+  border-top: 1px solid #f0f0f0;
+  display: flex;
+  gap: 10px;
+}
+
+.viewer-btn {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.viewer-btn-primary {
+  background: linear-gradient(135deg, #FF6B35 0%, #FF4444 100%);
+  color: white;
+}
+
+.viewer-btn-primary:hover {
+  box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+}
+
+.viewer-btn-secondary {
+  background: #F3F4F6;
+  color: #333;
+  border: 1px solid #E5E7EB;
+}
+
+.viewer-btn-secondary:hover {
+  background: #E5E7EB;
+}
+
+/* Lista de Archivos Múltiples */
+.files-list {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.file-item {
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: all 0.2s;
+}
+
+.file-item:hover {
+  border-color: #FF6B35;
+  box-shadow: 0 2px 8px rgba(255, 107, 53, 0.1);
+}
+
+.file-item-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: space-between;
+}
+
+.file-item-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+}
+
+.file-item-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.file-item-name {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.file-item-filename {
+  font-size: 13px;
+  font-weight: 600;
+  color: #333;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.file-item-size {
+  font-size: 11px;
+  color: #999;
+}
+
+.file-item-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.file-btn {
+  padding: 6px 10px;
+  border: none;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: #F3F4F6;
+  color: #333;
+}
+
+.file-btn:hover {
+  background: #E5E7EB;
+}
+
+.file-btn-remove {
+  background: #FEE2E2;
+  color: #DC2626;
+}
+
+.file-btn-remove:hover {
+  background: #FECACA;
+}
+
+.file-item-instructions {
+  display: none;
+  border-top: 1px solid #f0f0f0;
+  padding-top: 10px;
+}
+
+.file-item-instructions.show {
+  display: block;
+}
+
+.file-item-textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 12px;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 60px;
+  background: #FAFAFA;
+}
+
+.file-item-textarea:focus {
+  outline: none;
+  border-color: #FF6B35;
+  box-shadow: 0 0 0 2px rgba(255, 107, 53, 0.1);
+}
+
+.file-counter {
+  font-size: 11px;
+  color: #999;
+  text-align: right;
+  margin-top: 4px;
+}
+
 .form-group {
   margin-bottom: 16px;
 }
@@ -346,6 +778,29 @@ h1 {
 }
 
 .form-input::placeholder {
+  color: #aaa;
+}
+
+.form-textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 13px;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 80px;
+  background: white;
+  transition: border-color 0.2s;
+}
+
+.form-textarea:focus {
+  outline: none;
+  border-color: #FF6B35;
+  box-shadow: 0 0 0 2px rgba(255, 107, 53, 0.1);
+}
+
+.form-textarea::placeholder {
   color: #aaa;
 }
 
@@ -666,7 +1121,7 @@ h1 {
       <div class="logo-icon">🖨️</div>
       <div class="logo-text">Crayón</div>
     </div>
-    <button class="help-btn" onclick="showHelp()">? Ayuda</button>
+    <button class="help-btn" onclick="showHelp()">❓ Ayuda</button>
   </div>
 
   <div class="content">
@@ -679,13 +1134,11 @@ h1 {
 
       <!-- STEP 1: Upload & Name -->
       <div id="step1">
-        <div class="instructions-banner">
-          <div class="instructions-title">¡Hola! Bienvenido</div>
-          <ul class="instructions-list">
-            <li>Sube tu archivo aquí</li>
-            <li>Recibe tu número de turno</li>
-            <li>¡Listo!</li>
-          </ul>
+        <div class="welcome-banner">
+          <p class="welcome-text">
+            <span class="welcome-emoji">📤</span>
+            <span class="welcome-bold">Mandanos tu archivo</span> y nosotros lo imprimimos
+          </p>
         </div>
 
         <h1>Tu impresión</h1>
@@ -694,11 +1147,13 @@ h1 {
         <label class="upload-area" for="file-input" id="upload-area">
           <span class="upload-icon">📄</span>
           <div class="upload-text">Toca para seleccionar</div>
-          <div class="upload-hint">PDF, Word, JPG, PNG</div>
+          <div class="upload-hint">Cualquier tipo de archivo</div>
         </label>
-        <input type="file" id="file-input" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif">
+        <input type="file" id="file-input" multiple>
 
         <div class="file-feedback" id="file-feedback"></div>
+
+        <div class="files-list" id="filesList"></div>
 
         <div class="form-group">
           <label class="form-label">Tu nombre (opcional)</label>
@@ -759,6 +1214,12 @@ h1 {
           </div>
         </div>
 
+        <div class="form-group">
+          <label class="form-label">Comentarios o instrucciones (opcional)</label>
+          <textarea id="client-comments" class="form-textarea" placeholder="Ej: Encuadernar, urgente, etc." maxlength="200"></textarea>
+          <div class="form-hint">Máximo 200 caracteres</div>
+        </div>
+
         <button class="btn btn-gradient" id="btn-enviar" onclick="goToStep3()">Enviar →</button>
         <p class="step-label">Paso 2 de 3</p>
       </div>
@@ -802,6 +1263,10 @@ h1 {
               <span class="summary-label">Páginas</span>
               <span class="summary-value" id="summary-pages">Todas</span>
             </div>
+            <div class="summary-row" id="summary-comments-row" style="display: none;">
+              <span class="summary-label">Notas</span>
+              <span class="summary-value" id="summary-comments"></span>
+            </div>
           </div>
 
           <button class="btn btn-secondary" onclick="resetForm()">← Otra impresión</button>
@@ -812,13 +1277,81 @@ h1 {
   </div>
 </div>
 
+<!-- Modal de Ayuda -->
+<div id="helpModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <div class="modal-icon">❓</div>
+      <h2 class="modal-title">¿Cómo funciona?</h2>
+    </div>
+
+    <div class="modal-body">
+      <div class="help-step">
+        <div class="help-number">1</div>
+        <div class="help-text">Sube tu archivo (PDF, Word, imágenes)</div>
+      </div>
+
+      <div class="help-step">
+        <div class="help-number">2</div>
+        <div class="help-text">Configura copias, color, tamaño y más</div>
+      </div>
+
+      <div class="help-step">
+        <div class="help-number">3</div>
+        <div class="help-text">Recibe tu número de turno</div>
+      </div>
+
+      <div class="help-step">
+        <div class="help-number">4</div>
+        <div class="help-text">Espera en el mostrador, ¡listo!</div>
+      </div>
+    </div>
+
+    <div class="help-footer">
+      👤 ¿Necesitas ayuda? Pregunta al encargado
+    </div>
+
+    <div class="modal-buttons">
+      <button class="modal-btn modal-btn-secondary" onclick="closeHelp()">Cerrar</button>
+      <button class="modal-btn modal-btn-primary" onclick="closeHelp()">Entendido</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Visualizador de Archivos -->
+<div id="fileViewerModal" class="file-viewer-modal">
+  <div class="file-viewer-container">
+    <div class="file-viewer-header">
+      <h3 class="file-viewer-title" id="viewerFileName">archivo.pdf</h3>
+      <button class="file-viewer-close" onclick="closeFileViewer()">✕</button>
+    </div>
+
+    <div class="file-viewer-content" id="viewerContent">
+      <!-- Content goes here -->
+    </div>
+
+    <div class="file-viewer-footer">
+      <button class="viewer-btn viewer-btn-secondary" onclick="closeFileViewer()">Cancelar</button>
+      <button class="viewer-btn viewer-btn-primary" onclick="proceedWithFile()">Continuar</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
-// API Backend (Express server) - no Supabase directo
-const API_URL = window.location.origin + '/api';
+// Supabase Client - Conexión directa
+const { createClient } = supabase;
+const SUPABASE_URL = 'https://hzmdonzqayybifpzqtnb.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_ncwwe0eQjQD-KdgcjYaQxg__cBVlah0';
+
+const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 let formData = {
-  file: null,
+  files: [], // Array de {file, instructions}
   name: '',
+  comments: '',
   copies: 1,
   color: 'color',
   size: 'carta',
@@ -827,33 +1360,201 @@ let formData = {
 };
 
 document.getElementById('file-input').addEventListener('change', function(e) {
-  const feedback = document.getElementById('file-feedback');
-  const uploadArea = document.getElementById('upload-area');
-  const btn = document.getElementById('btn-next1');
-
   if(e.target.files.length > 0) {
-    const file = e.target.files[0];
-    const validTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'image/jpeg', 'image/png', 'image/gif'];
-    
-    if(!validTypes.includes(file.type)) {
-      feedback.className = 'file-feedback error';
-      feedback.textContent = `Tipo no permitido`;
-      uploadArea.classList.add('error');
-      btn.disabled = true;
-      formData.file = null;
-      return;
+    // Agregar los nuevos archivos a la lista
+    for (let file of e.target.files) {
+      formData.files.push({
+        file: file,
+        instructions: ''
+      });
     }
+    
+    renderFilesList();
+    updateFilesFeedback();
+  }
+});
 
-    formData.file = file;
+function renderFilesList() {
+  const filesList = document.getElementById('filesList');
+  const btn = document.getElementById('btn-next1');
+  
+  if (formData.files.length === 0) {
+    filesList.innerHTML = '';
+    btn.disabled = true;
+    return;
+  }
+  
+  filesList.innerHTML = formData.files.map((item, index) => {
+    const file = item.file;
+    const sizeKB = (file.size / 1024).toFixed(2);
+    const ext = file.name.split('.').pop().toLowerCase();
+    
+    const iconMap = {
+      'jpg': '🖼️', 'jpeg': '🖼️', 'png': '🖼️', 'gif': '🖼️', 'webp': '🖼️',
+      'pdf': '📄', 'doc': '📄', 'docx': '📄', 'txt': '📝',
+      'xls': '📊', 'xlsx': '📊', 'ppt': '📽️', 'pptx': '📽️',
+      'zip': '📦', 'rar': '📦', '7z': '📦',
+      'mp3': '🎵', 'wav': '🎵', 'mp4': '🎬', 'avi': '🎬'
+    };
+    const icon = iconMap[ext] || '📎';
+    
+    return `
+      <div class="file-item">
+        <div class="file-item-header">
+          <div class="file-item-info">
+            <div class="file-item-icon">${icon}</div>
+            <div class="file-item-name">
+              <div class="file-item-filename">${file.name}</div>
+              <div class="file-item-size">${sizeKB} KB</div>
+            </div>
+          </div>
+          <div class="file-item-actions">
+            <button type="button" class="file-btn" onclick="toggleFileInstructions(${index})">📝</button>
+            <button type="button" class="file-btn file-btn-remove" onclick="removeFile(${index})">✕</button>
+          </div>
+        </div>
+        
+        <div class="file-item-instructions" id="instructions-${index}">
+          <textarea 
+            class="file-item-textarea" 
+            placeholder="Instrucciones específicas para este archivo (ej: urgente, colores específicos, etc.)"
+            maxlength="200"
+            oninput="updateFileInstructions(${index}, this.value); updateCounter(this);"
+          >${item.instructions}</textarea>
+          <div class="file-counter"><span id="counter-${index}">0</span>/200</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+  
+  btn.disabled = false;
+}
+
+function toggleFileInstructions(index) {
+  const el = document.getElementById(`instructions-${index}`);
+  el.classList.toggle('show');
+}
+
+function updateFileInstructions(index, value) {
+  formData.files[index].instructions = value;
+}
+
+function updateCounter(el) {
+  const textarea = el;
+  const counter = textarea.parentElement.querySelector('.file-counter span');
+  counter.textContent = textarea.value.length;
+}
+
+function removeFile(index) {
+  formData.files.splice(index, 1);
+  renderFilesList();
+  updateFilesFeedback();
+}
+
+function updateFilesFeedback() {
+  const feedback = document.getElementById('file-feedback');
+  if (formData.files.length > 0) {
     feedback.className = 'file-feedback success';
-    feedback.textContent = file.name;
-    uploadArea.classList.remove('error');
-    btn.disabled = false;
+    feedback.textContent = `✓ ${formData.files.length} archivo${formData.files.length !== 1 ? 's' : ''} seleccionado${formData.files.length !== 1 ? 's' : ''}`;
+  } else {
+    feedback.textContent = '';
+    feedback.className = 'file-feedback';
+  }
+}
+
+function showFilePreview(file) {
+  const modal = document.getElementById('fileViewerModal');
+  const content = document.getElementById('viewerContent');
+  const fileName = document.getElementById('viewerFileName');
+  
+  fileName.textContent = file.name;
+  content.innerHTML = '';
+  
+  const fileType = file.type;
+  const fileExtension = file.name.split('.').pop().toLowerCase();
+  
+  // Imágenes
+  if (fileType.startsWith('image/')) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = document.createElement('img');
+      img.src = e.target.result;
+      img.className = 'file-preview-image';
+      content.appendChild(img);
+    };
+    reader.readAsDataURL(file);
+  }
+  // PDF
+  else if (fileType === 'application/pdf' || fileExtension === 'pdf') {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      pdfjsLib.getDocument({ data: e.target.result }).promise.then(pdf => {
+        pdf.getPage(1).then(page => {
+          const canvas = document.createElement('canvas');
+          const context = canvas.getContext('2d');
+          const viewport = page.getViewport({ scale: 1.5 });
+          canvas.width = viewport.width;
+          canvas.height = viewport.height;
+          canvas.className = 'file-preview-pdf';
+          
+          page.render({
+            canvasContext: context,
+            viewport: viewport
+          }).promise.then(() => {
+            content.appendChild(canvas);
+          });
+        });
+      });
+    };
+    reader.readAsArrayBuffer(file);
+  }
+  // Otros archivos
+  else {
+    const iconMap = {
+      'doc': '📄', 'docx': '📄', 'txt': '📝',
+      'xls': '📊', 'xlsx': '📊',
+      'ppt': '📽️', 'pptx': '📽️',
+      'zip': '📦', 'rar': '📦', '7z': '📦',
+      'mp3': '🎵', 'wav': '🎵',
+      'mp4': '🎬', 'avi': '🎬',
+    };
+    
+    const icon = iconMap[fileExtension] || '📎';
+    
+    content.innerHTML = `
+      <div class="file-preview-generic">
+        <div class="file-icon">${icon}</div>
+        <div class="file-type-text">${file.name}</div>
+        <div style="font-size: 12px; color: #ccc;">${(file.size / 1024).toFixed(2)} KB</div>
+      </div>
+    `;
+  }
+  
+  modal.classList.add('show');
+}
+
+function closeFileViewer() {
+  document.getElementById('fileViewerModal').classList.remove('show');
+}
+
+function proceedWithFile() {
+  closeFileViewer();
+  goToStep2();
+}
+
+// Cerrar modal al hacer click afuera
+document.getElementById('fileViewerModal').addEventListener('click', function(e) {
+  if (e.target === this) {
+    closeFileViewer();
   }
 });
 
 document.getElementById('client-name').addEventListener('change', function(e) {
   formData.name = e.target.value.trim();
+});
+
+document.getElementById('client-comments').addEventListener('change', function(e) {
+  formData.comments = e.target.value.trim();
 });
 
 function changeCopies(n) {
@@ -904,49 +1605,150 @@ async function goToStep3() {
   btn.classList.add('loading');
 
   try {
-    const formDataObj = new FormData();
-    formDataObj.append('archivo', formData.file);
-    formDataObj.append('cliente_nombre', formData.name);
-    formDataObj.append('copias', formData.copies);
-    formDataObj.append('color', formData.color);
-    formDataObj.append('tamaño', formData.size);
-    formDataObj.append('caras', formData.sides === 'one' ? 'una' : 'ambas');
-    formDataObj.append('paginas', formData.pages === 'all' ? 'todas' : document.getElementById('pages-input').value);
-
-    const response = await fetch(`${API_URL}/pedidos`, {
-      method: 'POST',
-      body: formDataObj
-    });
-
-    if (!response.ok) {
-      const error = await response.json();
-      alert('Error: ' + error.error);
-      btn.disabled = false;
-      btn.classList.remove('loading');
-      return;
+    if (formData.files.length === 0) {
+      throw new Error('Debes seleccionar al menos un archivo');
     }
 
-    const resultado = await response.json();
+    // 1. Obtener siguiente turno (solo una vez para todos los archivos)
+    const { data: contadorData, error: contadorError } = await supabaseClient
+      .from('turnos_contador')
+      .select('numero_actual, fecha_reinicio')
+      .eq('id', 1)
+      .single();
 
+    if (contadorError) throw contadorError;
+
+    // Verificar si es nuevo día
+    const hoy = new Date().toISOString().split('T')[0];
+    const fechaGuardada = new Date(contadorData.fecha_reinicio).toISOString().split('T')[0];
+
+    let nuevoNumero = contadorData.numero_actual + 1;
+
+    if (hoy !== fechaGuardada) {
+      await supabaseClient
+        .from('turnos_contador')
+        .update({ numero_actual: 0, fecha_reinicio: new Date() })
+        .eq('id', 1);
+      nuevoNumero = 1;
+    }
+
+    const turno = `A-${String(nuevoNumero).padStart(3, '0')}`;
+
+    // 2. Actualizar contador
+    const { error: updateError } = await supabaseClient
+      .from('turnos_contador')
+      .update({ numero_actual: nuevoNumero })
+      .eq('id', 1);
+
+    if (updateError) throw updateError;
+
+    // 3. Subir todos los archivos
+    const uploadedFiles = [];
+    for (let i = 0; i < formData.files.length; i++) {
+      const fileItem = formData.files[i];
+      const file = fileItem.file;
+      const nombreArchivo = `${nuevoNumero}_${Date.now()}_${i}_${file.name}`;
+      
+      const { data: uploadData, error: uploadError } = await supabaseClient.storage
+        .from('pedidos')
+        .upload(`${nuevoNumero}/${nombreArchivo}`, file);
+
+      if (uploadError) throw uploadError;
+
+      uploadedFiles.push({
+        ...uploadData,
+        nombreArchivo: nombreArchivo,
+        nombreOriginal: file.name,
+        tipo: file.type,
+        tamaño: file.size,
+        instrucciones: fileItem.instructions
+      });
+    }
+
+    // 4. Calcular precio (base por todos los archivos)
+    const precioBase = 1;
+    const precioColor = formData.color === 'color' ? 1.5 : 1;
+    const precioCares = formData.sides === 'one' ? 1 : 1.2;
+    const precio = (precioBase * precioColor * precioCares * formData.copies).toFixed(2);
+
+    // 5. Crear pedido en BD
+    const { data: pedidoData, error: pedidoError } = await supabaseClient
+      .from('pedidos')
+      .insert([
+        {
+          turno,
+          cliente_nombre: formData.name || null,
+          archivo_nombre: formData.files.map(f => f.file.name).join(', '),
+          archivo_size: formData.files.reduce((sum, f) => sum + f.file.size, 0),
+          cantidad_archivos: formData.files.length,
+          copias: formData.copies,
+          color: formData.color,
+          tamaño: formData.size,
+          caras: formData.sides === 'one' ? 'una' : 'ambas',
+          paginas: formData.pages === 'all' ? 'todas' : document.getElementById('pages-input').value,
+          estado: 'nuevo',
+          precio: parseFloat(precio),
+          comentarios: formData.comments || null
+        }
+      ])
+      .select()
+      .single();
+
+    if (pedidoError) throw pedidoError;
+
+    // 6. Guardar referencias de todos los archivos con sus instrucciones
+    const archivosData = uploadedFiles.map(uf => ({
+      pedido_id: pedidoData.id,
+      nombre_original: uf.nombreOriginal,
+      nombre_almacenado: uf.nombreArchivo,
+      tipo_archivo: uf.tipo,
+      tamaño: uf.tamaño,
+      ruta_supabase: uf.path,
+      instrucciones: uf.instrucciones || null
+    }));
+
+    const { error: archivosError } = await supabaseClient
+      .from('archivos')
+      .insert(archivosData);
+
+    if (archivosError) throw archivosError;
+
+    // 7. Mostrar confirmación
     document.getElementById('step2').classList.add('hidden');
     document.getElementById('step3').classList.remove('hidden');
     document.getElementById('step2-bar').classList.remove('active');
     document.getElementById('step3-bar').classList.add('active');
 
-    document.getElementById('turno-num').textContent = resultado.turno;
+    document.getElementById('turno-num').textContent = turno;
 
-    if (resultado.cliente_nombre && resultado.cliente_nombre !== 'Sin nombre') {
+    if (formData.name) {
       const clientEl = document.getElementById('turno-client');
-      clientEl.textContent = resultado.cliente_nombre;
+      clientEl.textContent = formData.name;
       clientEl.style.display = 'block';
     }
 
-    document.getElementById('summary-file').textContent = resultado.archivo;
-    document.getElementById('summary-copies').textContent = resultado.copias;
-    document.getElementById('summary-color').textContent = resultado.color === 'color' ? 'Color' : 'B/N';
-    document.getElementById('summary-size').textContent = resultado.tamaño === 'carta' ? 'Carta' : 'Oficio';
-    document.getElementById('summary-sides').textContent = resultado.caras === 'una' ? 'Una' : 'Ambas';
-    document.getElementById('summary-pages').textContent = resultado.paginas === 'todas' ? 'Todas' : resultado.paginas;
+    // Mostrar resumen de archivos
+    const summaryFile = document.getElementById('summary-file');
+    if (formData.files.length === 1) {
+      summaryFile.textContent = formData.files[0].file.name;
+    } else {
+      summaryFile.innerHTML = formData.files.map((f, i) => `
+        <div style="font-size: 12px; margin-bottom: 4px;">
+          ${i + 1}. ${f.file.name}${f.instructions ? ` <span style="color: #FF6B35; font-weight: 600;">*</span>` : ''}
+        </div>
+      `).join('');
+    }
+
+    document.getElementById('summary-copies').textContent = formData.copies;
+    document.getElementById('summary-color').textContent = formData.color === 'color' ? 'Color' : 'B/N';
+    document.getElementById('summary-size').textContent = formData.size === 'carta' ? 'Carta' : 'Oficio';
+    document.getElementById('summary-sides').textContent = formData.sides === 'one' ? 'Una' : 'Ambas';
+    document.getElementById('summary-pages').textContent = formData.pages === 'all' ? 'Todas' : document.getElementById('pages-input').value;
+
+    if (formData.comments) {
+      document.getElementById('summary-comments').textContent = formData.comments;
+      document.getElementById('summary-comments-row').style.display = 'flex';
+    }
 
     window.scrollTo(0, 0);
   } catch (error) {
@@ -958,11 +1760,13 @@ async function goToStep3() {
 }
 
 function resetForm() {
-  formData = { file: null, name: '', copies: 1, color: 'color', size: 'carta', sides: 'one', pages: 'all' };
+  formData = { files: [], name: '', comments: '', copies: 1, color: 'color', size: 'carta', sides: 'one', pages: 'all' };
   document.getElementById('file-input').value = '';
   document.getElementById('client-name').value = '';
+  document.getElementById('client-comments').value = '';
   document.getElementById('file-feedback').textContent = '';
   document.getElementById('file-feedback').className = 'file-feedback';
+  document.getElementById('filesList').innerHTML = '';
   document.getElementById('btn-next1').disabled = true;
   document.getElementById('copies-val').textContent = '1';
   document.getElementById('step3').classList.add('hidden');
@@ -980,8 +1784,19 @@ function resetForm() {
 }
 
 function showHelp() {
-  alert('📋 PASOS:\n\n1️⃣ Sube archivo\n2️⃣ Elige opciones\n3️⃣ Recibe turno\n\n¿Ayuda? Muestra teléfono al encargado.');
+  document.getElementById('helpModal').classList.add('show');
 }
+
+function closeHelp() {
+  document.getElementById('helpModal').classList.remove('show');
+}
+
+// Cerrar modal al hacer click afuera
+document.getElementById('helpModal').addEventListener('click', function(e) {
+  if (e.target === this) {
+    closeHelp();
+  }
+});
 
 setColor('color');
 setSize('carta');
