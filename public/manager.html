@@ -700,6 +700,7 @@ html, body {
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
 
 <script>
@@ -771,9 +772,6 @@ async function handleLogout() {
   document.getElementById('loginPassword').value = '';
   document.getElementById('loginError').textContent = '';
 }
-
-// Trackear estado previo de pedidos para animar solo cambios reales
-let previousPedidosState = {};
 
 function manualRefresh() {
   const btn = document.getElementById('refresh-btn');
