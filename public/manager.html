@@ -456,8 +456,8 @@ html, body {
 
 .file-viewer-content {
   flex: 1;
-  overflow-y: auto;
-  padding: 20px;
+  overflow: hidden;
+  padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -619,6 +619,7 @@ html, body {
         <div class="section-title">Fila de Pedidos</div>
         <div style="display: flex; gap: 8px;">
           <button class="refresh-btn" id="refresh-btn" onclick="manualRefresh()">🔄 Actualizar</button>
+          <button class="refresh-btn" style="background: #E8F5E9; color: #2E7D32;" onclick="cleanOrphanPedidos()">🧹 Limpiar Vacíos</button>
           <button class="refresh-btn" style="background: #FFF3CC; color: #D4A517;" onclick="cleanOldFiles()">🧹 Limpiar Antiguos</button>
           <button class="refresh-btn" style="background: #FFE8D6; color: #FF6B35;" onclick="showBulkDeleteConfirm()">🗑️ Borrar TODO</button>
           <button class="refresh-btn" style="background: #FFE8D6; color: #FF6B35;" onclick="handleLogout()">🚪 Salir</button>
@@ -1060,22 +1061,33 @@ function closeFileViewer() {
 
 async function previewFileFromStorage(rutaSupabase, nombreArchivo) {
   try {
-    const { data, error } = await supabaseClient.storage
+    // Obtener URL pública del archivo
+    const { data: { publicUrl } } = supabaseClient.storage
       .from('pedidos')
-      .download(rutaSupabase);
+      .getPublicUrl(rutaSupabase);
 
-    if (error) {
-      console.error('Error descargando archivo:', error);
-      alert('No se pudo descargar el archivo');
-      return;
-    }
+    // Google Drive Viewer URL - soporta TODOS los formatos
+    const googleViewerUrl = `https://drive.google.com/viewerng/viewer?embedded=true&url=${encodeURIComponent(publicUrl)}`;
 
-    // Crear un File object desde el Blob para usar con showFilePreview
-    const file = new File([data], nombreArchivo, { type: data.type });
-    showFilePreview(file);
+    const modal = document.getElementById('fileViewerModal');
+    const content = document.getElementById('viewerContent');
+    const fileName = document.getElementById('viewerFileName');
+
+    fileName.textContent = nombreArchivo;
+    
+    // Usar Google Drive Viewer para todos los archivos
+    content.innerHTML = `
+      <iframe 
+        src="${googleViewerUrl}" 
+        style="width: 100%; height: 100%; border: none; border-radius: 8px;"
+        allowfullscreen>
+      </iframe>
+    `;
+
+    modal.classList.add('show');
   } catch (error) {
-    console.error(error);
-    alert('Error: ' + error.message);
+    console.error('Error mostrando preview:', error);
+    alert('Error al mostrar preview: ' + error.message);
   }
 }
 
@@ -1179,12 +1191,17 @@ async function confirmBulkDelete() {
   }
 
   try {
-    // Obtener todos los archivos
-    const { data: todosLosArchivos, error: fetchError } = await supabaseClient
+    // Obtener todos los archivos y pedidos
+    const { data: todosLosArchivos, error: fetchError1 } = await supabaseClient
       .from('archivos')
       .select('ruta_supabase, id');
 
-    if (fetchError) throw fetchError;
+    const { data: todosPedidos, error: fetchError2 } = await supabaseClient
+      .from('pedidos')
+      .select('id');
+
+    if (fetchError1) throw fetchError1;
+    if (fetchError2) throw fetchError2;
 
     // Borrar de Storage
     if (todosLosArchivos.length > 0) {
@@ -1199,19 +1216,69 @@ async function confirmBulkDelete() {
       }
     }
 
-    // Borrar toda la tabla archivos
-    const { error: deleteError } = await supabaseClient
+    // Borrar todos los archivos de la tabla
+    const { error: deleteArchivosError } = await supabaseClient
       .from('archivos')
       .delete()
-      .neq('id', '00000000-0000-0000-0000-000000000000'); // borrar todos excepto imposible (todos)
+      .neq('id', '00000000-0000-0000-0000-000000000000');
 
-    if (deleteError) throw deleteError;
+    if (deleteArchivosError) throw deleteArchivosError;
+
+    // Borrar todos los pedidos de la tabla
+    const { error: deletePedidosError } = await supabaseClient
+      .from('pedidos')
+      .delete()
+      .neq('id', '00000000-0000-0000-0000-000000000000');
+
+    if (deletePedidosError) throw deletePedidosError;
 
     closeBulkDeleteConfirm();
-    alert(`✅ ${todosLosArchivos.length} archivo(s) borrado(s)`);
+    alert(`✅ Se eliminaron:\n- ${todosLosArchivos.length} archivo(s)\n- ${todosPedidos.length} pedido(s)\n\n¡Fila completamente limpia!`);
     loadQueue();
   } catch (error) {
-    console.error('Error borrando archivos:', error);
+    console.error('Error borrando datos:', error);
+    alert('Error: ' + error.message);
+  }
+}
+
+async function cleanOrphanPedidos() {
+  try {
+    // Obtener todos los pedidos
+    const { data: todosLospedidos, error: fetchPedidosError } = await supabaseClient
+      .from('pedidos')
+      .select('id');
+
+    if (fetchPedidosError) throw fetchPedidosError;
+
+    let pedidosBorrados = 0;
+
+    // Por cada pedido, verificar si tiene archivos
+    for (const pedido of todosLospedidos) {
+      const { data: archivos, error: fetchError } = await supabaseClient
+        .from('archivos')
+        .select('id')
+        .eq('pedido_id', pedido.id);
+
+      if (fetchError) throw fetchError;
+
+      // Si no tiene archivos, borrarlo
+      if (archivos.length === 0) {
+        await supabaseClient
+          .from('pedidos')
+          .delete()
+          .eq('id', pedido.id);
+        pedidosBorrados++;
+      }
+    }
+
+    if (pedidosBorrados === 0) {
+      alert('✨ No hay pedidos vacíos (todos tienen archivos)');
+    } else {
+      alert(`✅ Se eliminaron ${pedidosBorrados} pedido(s) vacío(s)`);
+      loadQueue();
+    }
+  } catch (error) {
+    console.error('Error limpiando pedidos huérfanos:', error);
     alert('Error: ' + error.message);
   }
 }
