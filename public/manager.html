@@ -825,7 +825,7 @@ async function loadQueue() {
                   <div style="font-weight: 700; color: #333; font-size: 12px;">📄 ${a.nombre_original}</div>
                   <div style="display: flex; gap: 6px;">
                     <button style="background: #00A8E8; color: white; border: none; border-radius: 4px; padding: 4px 8px; font-size: 11px; font-weight: 600; cursor: pointer;" onclick="previewFileFromStorage('${a.ruta_supabase}', '${a.nombre_original}')">👁️ Ver</button>
-                    <button style="background: #FF4444; color: white; border: none; border-radius: 4px; padding: 4px 8px; font-size: 11px; font-weight: 600; cursor: pointer;" onclick="deleteFile('${a.id}', '${a.nombre_original}')">🗑️ Borrar</button>
+                    ${pedidoArchivos.length === 1 ? `<button style="background: #FF4444; color: white; border: none; border-radius: 4px; padding: 4px 8px; font-size: 11px; font-weight: 600; cursor: pointer;" onclick="deleteFile('${a.id}', '${a.nombre_original}')">🗑️ Borrar</button>` : ''}
                   </div>
                 </div>
                 <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 6px;">
@@ -854,6 +854,10 @@ async function loadQueue() {
             <div style="margin-bottom: 12px;">
               ${archivosHTML}
             </div>
+
+            ${pedidoArchivos.length > 1 ? `
+              <button style="width: 100%; background: #FF4444; color: white; border: none; border-radius: 4px; padding: 8px; font-size: 12px; font-weight: 600; cursor: pointer; margin-bottom: 8px;" onclick="deleteAllFilesFromPedido('${p.id}')">🗑️ Borrar todos (${pedidoArchivos.length})</button>
+            ` : ''}
 
             ${p.comentarios ? `
               <div style="font-size: 12px; background: #FFF5F0; padding: 8px; border-radius: 4px; margin-bottom: 8px; border-left: 3px solid #FF6B35;">
@@ -1066,23 +1070,43 @@ async function previewFileFromStorage(rutaSupabase, nombreArchivo) {
       .from('pedidos')
       .getPublicUrl(rutaSupabase);
 
-    // Google Drive Viewer URL - soporta TODOS los formatos
-    const googleViewerUrl = `https://drive.google.com/viewerng/viewer?embedded=true&url=${encodeURIComponent(publicUrl)}`;
-
     const modal = document.getElementById('fileViewerModal');
     const content = document.getElementById('viewerContent');
     const fileName = document.getElementById('viewerFileName');
 
     fileName.textContent = nombreArchivo;
     
-    // Usar Google Drive Viewer para todos los archivos
-    content.innerHTML = `
-      <iframe 
-        src="${googleViewerUrl}" 
-        style="width: 100%; height: 100%; border: none; border-radius: 8px;"
-        allowfullscreen>
-      </iframe>
-    `;
+    const ext = nombreArchivo.split('.').pop().toLowerCase();
+
+    // Para imágenes (PNG, JPG, etc): mostrar directamente
+    if (ext.match(/png|jpg|jpeg|gif|webp|bmp/i)) {
+      content.innerHTML = `
+        <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #f5f5f5; border-radius: 8px; overflow: auto;">
+          <img src="${publicUrl}" style="max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px;">
+        </div>
+      `;
+    } 
+    // Para PDF: usar viewer nativo
+    else if (ext === 'pdf') {
+      content.innerHTML = `
+        <iframe 
+          src="${publicUrl}#toolbar=1" 
+          style="width: 100%; height: 100%; border: none; border-radius: 8px;"
+          allowfullscreen>
+        </iframe>
+      `;
+    }
+    // Para otros formatos: Google Drive Viewer como fallback
+    else {
+      const googleViewerUrl = `https://drive.google.com/viewerng/viewer?embedded=true&url=${encodeURIComponent(publicUrl)}`;
+      content.innerHTML = `
+        <iframe 
+          src="${googleViewerUrl}" 
+          style="width: 100%; height: 100%; border: none; border-radius: 8px;"
+          allowfullscreen>
+        </iframe>
+      `;
+    }
 
     modal.classList.add('show');
   } catch (error) {
@@ -1113,6 +1137,58 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Funciones de borrado de archivos
+async function deleteAllFilesFromPedido(pedidoId) {
+  try {
+    // Obtener todos los archivos del pedido
+    const { data: archivosDelPedido, error: fetchError } = await supabaseClient
+      .from('archivos')
+      .select('id, ruta_supabase')
+      .eq('pedido_id', pedidoId);
+
+    if (fetchError) throw fetchError;
+
+    if (archivosDelPedido.length === 0) {
+      alert('No hay archivos para borrar');
+      return;
+    }
+
+    if (!confirm(`¿Borrar todos los ${archivosDelPedido.length} archivo(s) de este pedido?`)) {
+      return;
+    }
+
+    // Borrar de Storage
+    const rutas = archivosDelPedido
+      .map(a => a.ruta_supabase)
+      .filter(r => r);
+
+    if (rutas.length > 0) {
+      await supabaseClient.storage
+        .from('pedidos')
+        .remove(rutas);
+    }
+
+    // Borrar de la tabla archivos
+    for (const archivo of archivosDelPedido) {
+      await supabaseClient
+        .from('archivos')
+        .delete()
+        .eq('id', archivo.id);
+    }
+
+    // Borrar el pedido también
+    await supabaseClient
+      .from('pedidos')
+      .delete()
+      .eq('id', pedidoId);
+
+    alert(`✅ Se eliminaron ${archivosDelPedido.length} archivo(s) y el pedido`);
+    loadQueue();
+  } catch (error) {
+    console.error('Error borrando archivos:', error);
+    alert('Error: ' + error.message);
+  }
+}
+
 async function deleteFile(archivoId, nombreArchivo) {
   if (!confirm(`¿Borrar permanentemente "${nombreArchivo}"?`)) {
     return;
