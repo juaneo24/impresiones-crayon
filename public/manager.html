@@ -1166,11 +1166,6 @@ async function deleteFile(archivoId, nombreArchivo) {
     alert('Error al borrar: ' + error.message);
   }
 }
-  } catch (error) {
-    console.error('Error borrando archivo:', error);
-    alert('Error al borrar: ' + error.message);
-  }
-}
 
 function showBulkDeleteConfirm() {
   document.getElementById('bulkDeleteModal').classList.add('show');
