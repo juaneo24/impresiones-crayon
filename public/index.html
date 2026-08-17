@@ -2053,8 +2053,6 @@ async function goToStep3() {
         {
           turno,
           cliente_nombre: formData.name || null,
-          archivo_nombre: formData.files.map(f => f.file.name).join(', '),
-          archivo_size: formData.files.reduce((sum, f) => sum + f.file.size, 0),
           cantidad_archivos: formData.files.length,
           estado: 'nuevo',
           precio: parseFloat(precioTotal),
